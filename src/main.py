@@ -7,7 +7,7 @@ if __name__ == "__main__":
 
     user = User(api_key=api_key, api_secret=api_secret, paper_trading=True) 
 
-    print(user.get_buying_power())
+    print(user)
 
 
 
