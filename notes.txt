@@ -1,0 +1,76 @@
+
+INSTALLATION -
+	- project written and made in linux, install and build may be different on windows and macos
+	- ensure system has python tool installed, and is available in the terminal.
+	- run the ./build.sh script
+	- then source the venv, 
+		source ./venv/bin/activate
+
+	- to run, run the ./run.sh script
+
+Market Order - 
+	Order executes immediately, not guarenteed you will get the price you 
+	believe. 
+
+Limit Order - 
+	sell or buy at exactly this price
+	returns a status, does not execute immediately
+
+
+- AI DESCRIPTION FOR TRADING MINDSET - 
+		How these fit together (mental model)
+
+		When a trader looks at a stock, their brain does this:
+
+		Is the market open?
+
+		What’s the current bid/ask?
+
+		What was the last trade price?
+
+		What’s the short-term trend (1m/5m candles)?
+
+		Is volume confirming the move?
+
+		That’s the decision loop.
+
+
+- Limit Orders - 
+	sell at or buy at this price point, 	
+
+- Market Orders
+	sell or buy instantly at whatever market price is. 	
+
+- TODO 
+		
+	- build out the user class -
+	- build out minimal functions - 
+	- build out database -
+
+
+	needed functions -
+		
+		- ALL FUNCTIONS FOR THE USER SHOULD GO INTO THE USER CLASS
+
+	
+		- user functions - 
+			- get order status - 
+	
+		- minimal functions - 
+			get_latest_price() - get latest price of stock
+			get_bid_ask() - get bid and ask, highest and lowest market buying stat. 
+			place_limit_order() - placing a limit order - 
+			place_market_order() - placeing a market order -
+			cancel_order() - cancel order that has already been placed
+			get_order_status() - get order status
+			get_positions() - get your position on stock
+			close_position() - close your positon - remove your risk from stock entirely.
+			get_buying_power() - get your buying power
+			place_stop_loss() - safety hatch if stock goes down, place order with stock reaches 
+				this price
+			place_take_profit() - if price reaches this profit, sell get my profit
+
+
+
+
+
