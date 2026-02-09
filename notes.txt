@@ -51,10 +51,6 @@ Limit Order -
 	needed functions -
 		
 		- ALL FUNCTIONS FOR THE USER SHOULD GO INTO THE USER CLASS
-
-	
-		- user functions - 
-			- get order status - 
 	
 		- minimal functions - 
 			get_latest_price() - get latest price of stock
@@ -69,7 +65,6 @@ Limit Order -
 			place_stop_loss() - safety hatch if stock goes down, place order with stock reaches 
 				this price
 			place_take_profit() - if price reaches this profit, sell get my profit
-
 
 
 
