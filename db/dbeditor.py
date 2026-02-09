@@ -13,7 +13,8 @@ cur.execute("""
             qty TEXT,
             side TEXT,
             user TEXT,
-            client_order_id TEXT
+            client_order_id TEXT,
+            date TEXT
         )
             """)
 

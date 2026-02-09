@@ -5,13 +5,13 @@ from utils import Error
 
 db_directory_path = "./db/"
 
-def insertDBOrder(ordertype, symbol, qty, side, user, client_order_id) :
+def insertDBOrder(ordertype, symbol, qty, side, user, client_order_id, date) :
     conn = sqlite3.connect(db_directory_path + "orders.db")
 
     cur = conn.cursor() 
     
     try :
-        cur.execute("INSERT INTO orders VALUES (?, ?, ?, ?, ?, ?)", [ordertype, symbol, str(qty), side, user, client_order_id])
+        cur.execute("INSERT INTO orders VALUES (?, ?, ?, ?, ?, ?, ?)", [ordertype, symbol, str(qty), side, user, client_order_id, str(date)])
 
     except Exception as e:
         return_error = Error("error inserting new order", error=e)         

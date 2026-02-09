@@ -55,8 +55,9 @@ Limit Order -
 		- minimal functions - 
 			* place_market_order() - placing a market order -
 			* get_latest_price() - get latest price of stock
-			place_limit_order() - placing a limit order - 
+			* place_limit_order() - placing a limit order - 
 			cancel_order() - cancel order that has already been placed
+			get_order_info()	
 			get_order_status() - get order status
 			get_positions() - get your position on stock
 			close_position() - close your positon - remove your risk from stock entirely.
@@ -64,7 +65,7 @@ Limit Order -
 			place_stop_loss() - safety hatch if stock goes down, place order with stock reaches 
 				this price
 			place_take_profit() - if price reaches this profit, sell get my profit
-
+			
 
 
 
