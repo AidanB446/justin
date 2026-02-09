@@ -53,7 +53,7 @@ Limit Order -
 		- ALL FUNCTIONS FOR THE USER SHOULD GO INTO THE USER CLASS
 	
 		- minimal functions - 
-			place_market_order() - placing a market order -
+			* place_market_order() - placing a market order -
 			* get_latest_price() - get latest price of stock
 			place_limit_order() - placing a limit order - 
 			cancel_order() - cancel order that has already been placed
