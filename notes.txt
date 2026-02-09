@@ -53,10 +53,9 @@ Limit Order -
 		- ALL FUNCTIONS FOR THE USER SHOULD GO INTO THE USER CLASS
 	
 		- minimal functions - 
-			get_latest_price() - get latest price of stock
-			get_bid_ask() - get bid and ask, highest and lowest market buying stat. 
+			place_market_order() - placing a market order -
+			* get_latest_price() - get latest price of stock
 			place_limit_order() - placing a limit order - 
-			place_market_order() - placeing a market order -
 			cancel_order() - cancel order that has already been placed
 			get_order_status() - get order status
 			get_positions() - get your position on stock

@@ -1,0 +1,10 @@
+
+orders.db - db for orders that have succeded
+	orders	
+		ordertype TEXT - market order, limit order, etc
+		symbol - TEXT - stock symbol
+		qty - TEXT -
+		side - TEXT - 
+		user - TEXT - username of the user
+		client_order_id - TEXT
+

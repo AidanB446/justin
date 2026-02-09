@@ -3,10 +3,8 @@ from alpaca.common.exceptions import APIError
 
 from alpaca.data.requests import StockLatestTradeRequest
 from alpaca.data.historical import StockHistoricalDataClient
-    
-class Error :
-    def __init__(self, error_message) :
-        self.error_message = error_message
+
+from utils import Error
 
 def get_latest_price(user, stockSymbols) :
     api_key = user.api_key  
@@ -31,5 +29,10 @@ def get_latest_price(user, stockSymbols) :
             return_dictionary[i] = None 
 
     return return_dictionary
+
+
+
+
+
 
 
