@@ -1,5 +1,5 @@
 
-from user import User
+from utils import User
 from market_interactions import place_market_order
 
 
