@@ -1,17 +1,16 @@
 
-from alpaca.common import RawData
-from alpaca.trading.client import TradingClient
-from alpaca.trading.models import Order
-from alpaca.trading.requests import LimitOrderRequest, MarketOrderRequest
-from alpaca.trading.enums import OrderSide, TimeInForce
-
 from utils import Error
-
-from alpaca.common.exceptions import APIError
-
 from database_interactions import insertDBOrder
 
 from datetime import datetime
+
+from alpaca.common import RawData
+from alpaca.common.exceptions import APIError
+
+from alpaca.trading.client import TradingClient
+from alpaca.trading.models import Order
+from alpaca.trading.requests import LimitOrderRequest, MarketOrderRequest, GetOrderByIdRequest
+from alpaca.trading.enums import OrderSide, TimeInForce
 
 def place_market_order(users, stockSymbol, stockOperationQty, side) :
 
@@ -133,4 +132,47 @@ def place_limit_order(users, stockSymbol, stockOperationQty, side, limit) :
             return_data[username] = "order failed"
 
     return return_data
+
+def get_order_info(user, order_client_id) :
+    
+    api_key = user.api_key
+    api_secret= user.api_secret
+    paper_trading_bool = user.paper_trading
+    username = user.name     
+
+    trading_client = None
+
+    try:
+        trading_client = TradingClient(api_key, api_secret, paper=paper_trading_bool)
+
+    except APIError as e:
+        return Error("Trading Client failed to initialize: ", e)
+
+    order = trading_client.get_order_by_client_id(order_client_id)
+        
+    order_data = {}
+
+    if type(order) == Order :
+        order_data["username"] = username
+        order_data["type"] = str(order.type)   
+        order_data["status"] = order.status
+        order_data["symbol"] = order.symbol 
+        order_data["qty"] = order.qty
+        order_data["side"] = str(order.side) 
+
+        if order.type == "limit" :
+            order_data["limit_price"] = order.limit_price
+
+    elif type(order) == RawData :
+        order_data["username"] = username
+        order_data["type"] = str(order["type"])   
+        order_data["status"] = order["status"]
+        order_data["symbol"] = order["symbol"]
+        order_data["qty"] = order["qty"]
+        order_data["side"] = str(order["side"]) 
+        
+        if order["type"]== "limit" :
+            order_data["limit_price"] = order["limit_price"]
+
+    return order_data
 
