@@ -4,7 +4,7 @@ from alpaca.common.exceptions import APIError
 from alpaca.data.requests import StockLatestTradeRequest
 from alpaca.data.historical import StockHistoricalDataClient
 
-from utils import Error
+from assests import Error
 
 def get_latest_price(user, stockSymbols) :
     api_key = user.api_key  

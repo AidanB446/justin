@@ -1,6 +1,6 @@
 
-from utils import User
-from market_interactions import get_order_status
+from assests import User
+from market_interactions import place_market_order
 
 if __name__ == "__main__":
     api_key = "PKFASBVDSGPYDR4G7QPWCR47QD"
@@ -8,12 +8,13 @@ if __name__ == "__main__":
     name = "Aidan"
 
     user1 = User(name, api_key=api_key, api_secret=api_secret, paper_trading=True) 
-    output = get_order_status(user1, "7e49ed1b-eb12-4a00-9853-8028a92fb5f4")
-    
+    user2 = User(name, api_key=api_key, api_secret=api_secret, paper_trading=True) 
+  
+    output1 = place_market_order([user1, user2], "AAPL", 5, "buy")
 
-    output2 = get_order_status(user1, "asdfasdf7e49ed1b-eb12-4a00-9853-8028a92fb5f4")
-    
-    print(output)
-    print(output2)
-    
+    print(output1)
+
+
+
+   
 

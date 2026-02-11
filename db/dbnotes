@@ -7,4 +7,14 @@ orders.db - db for orders that have succeded
 		side - TEXT - 
 		user - TEXT - username of the user
 		client_order_id - TEXT
+		transaction_id - TEXT - ID linked to the order placed in app.	
+		date - TEXT -
+
+accounts.db - db for all alpaca accounts that are users
+	
+	accounts
+		api_key - TEXT - key
+		api_secret - TEXT - secret
+		name - TEXT - name of the given user	
+
 

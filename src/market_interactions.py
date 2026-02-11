@@ -1,5 +1,6 @@
 
-from utils import Error
+from assests import Error
+from assests import new_transaction_id
 from database_interactions import insertDBOrder
 
 from datetime import datetime
@@ -9,7 +10,7 @@ from alpaca.common.exceptions import APIError
 
 from alpaca.trading.client import TradingClient
 from alpaca.trading.models import Order
-from alpaca.trading.requests import LimitOrderRequest, MarketOrderRequest, GetOrderByIdRequest
+from alpaca.trading.requests import LimitOrderRequest, MarketOrderRequest 
 from alpaca.trading.enums import OrderSide, TimeInForce
 
 def place_market_order(users, stockSymbol, stockOperationQty, side) :
@@ -24,6 +25,8 @@ def place_market_order(users, stockSymbol, stockOperationQty, side) :
         return Error("incorrect side in parameter for place_market_order function.")
      
     return_data= {}
+
+    client_transaction_id = new_transaction_id() 
 
     for user in users :
             
@@ -59,10 +62,12 @@ def place_market_order(users, stockSymbol, stockOperationQty, side) :
             
             date_and_time = datetime.now().isoformat()
 
-            result = insertDBOrder("market", stockSymbol, stockOperationQty, side, username, client_order_id, date_and_time)
+            result = insertDBOrder("market", stockSymbol, stockOperationQty, side, username, client_order_id, client_transaction_id, date_and_time)
             
             if result != None :
                 print(result)
+                print(result.error_message)
+                print(result.error)
             
             return_data[username] = "success"
 
@@ -83,6 +88,8 @@ def place_limit_order(users, stockSymbol, stockOperationQty, side, limit) :
     else :
         return Error("incorrect side in parameter for place_market_order function.")
      
+    client_transaction_id = new_transaction_id() 
+    
     return_data= {}
 
     for user in users :
@@ -120,7 +127,7 @@ def place_limit_order(users, stockSymbol, stockOperationQty, side, limit) :
 
             date_and_time = datetime.now().isoformat()
             
-            result = insertDBOrder("limit", stockSymbol, stockOperationQty, side, username, client_order_id, date_and_time)
+            result = insertDBOrder("limit", stockSymbol, stockOperationQty, side, username, client_order_id, client_transaction_id, date_and_time)
             
             if result != None :
                 print(result)
@@ -210,5 +217,31 @@ def get_order_status(user, order_client_id) :
         return return_error
 
     return orderstatus
+
+
+def cancel_order(transaction_id) :
+    
+    # for this function i want to take a transaction_id, find all users with the following transaction id,
+    # get all user credentials
+    # get the client_order_id for all users orders
+    # and the submit requests to cancel each of them and return statuses to the client
+    
+    # TODO left off on writing the get_users_from_transaction_id function in database_interactions
+
+
+    api_key = user.api_key
+    api_secret= user.api_secret
+    paper_trading_bool = user.paper_trading
+
+    trading_client = None
+
+    try:
+        trading_client = TradingClient(api_key, api_secret, paper=paper_trading_bool)
+
+    except APIError as e:
+        return Error("Trading Client failed to initialize: ", e)
         
+
+
+
 
