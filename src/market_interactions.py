@@ -176,3 +176,39 @@ def get_order_info(user, order_client_id) :
 
     return order_data
 
+def get_order_status(user, order_client_id) :
+    
+    api_key = user.api_key
+    api_secret= user.api_secret
+    paper_trading_bool = user.paper_trading
+
+    trading_client = None
+
+    try:
+        trading_client = TradingClient(api_key, api_secret, paper=paper_trading_bool)
+
+    except APIError as e:
+        return Error("Trading Client failed to initialize: ", e)
+        
+
+    try :
+        order = trading_client.get_order_by_client_id(order_client_id)
+    
+    except Exception as e :
+        return_error = Error("Error getting order by client id", e)
+        return return_error
+
+    orderstatus = None 
+
+    if type(order) == Order :
+        orderstatus = order.status
+
+    elif type(order) == RawData :
+         orderstatus = order["status"]
+    else :
+        return_error = Error("order resolved to a invalid datatype")
+        return return_error
+
+    return orderstatus
+        
+
