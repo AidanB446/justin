@@ -19,6 +19,18 @@ class Error :
         self.error_message = error_message
         self.error= error 
 
+class UserOrder:
+
+    def __init__(self, ordertype, symbol, qty, side, user, client_order_id, transaction_id, date) :
+        self.ordertype= ordertype 
+        self.symbol= symbol 
+        self.qty= qty
+        self.side= side 
+        self.user = user 
+        self.client_order_id = client_order_id 
+        self.transaction_id = transaction_id 
+        self.date = date
+
 def new_transaction_id():
     characters = string.ascii_letters + string.digits
     transaction_id= ''.join(secrets.choice(characters) for _ in range(16))

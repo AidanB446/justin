@@ -1,7 +1,9 @@
 
 from assests import Error
 from assests import new_transaction_id
+
 from database_interactions import insertDBOrder
+from database_interactions import get_user_orders_from_transaction_id
 
 from datetime import datetime
 
@@ -41,7 +43,8 @@ def place_market_order(users, stockSymbol, stockOperationQty, side) :
             trading_client = TradingClient(api_key, api_secret, paper=paper_trading_bool)
 
         except APIError as e:
-            return Error("Trading Client failed to initialize: ", e)
+            return_data[username] = "Trading Client failed to initialize"
+            continue
 
         market_order_data = MarketOrderRequest(
             symbol=stockSymbol,
@@ -69,7 +72,7 @@ def place_market_order(users, stockSymbol, stockOperationQty, side) :
                 print(result.error_message)
                 print(result.error)
             
-            return_data[username] = "success"
+            return_data[username] = "order placed"
 
         except Exception as e:
             print(f"Failed to submit order: {e}")
@@ -105,7 +108,9 @@ def place_limit_order(users, stockSymbol, stockOperationQty, side, limit) :
             trading_client = TradingClient(api_key, api_secret, paper=paper_trading_bool)
 
         except APIError as e:
-            return Error("Trading Client failed to initialize: ", e)
+            return_data[username] = "Trading Client failed to initialize"
+            print(e) 
+            continue
 
         limit_order_data = LimitOrderRequest(
             symbol=stockSymbol,
@@ -132,7 +137,7 @@ def place_limit_order(users, stockSymbol, stockOperationQty, side, limit) :
             if result != None :
                 print(result)
             
-            return_data[username] = "success"
+            return_data[username] = "order placed"
 
         except Exception as e:
             print(f"Failed to submit order: {e}")
@@ -221,26 +226,51 @@ def get_order_status(user, order_client_id) :
 
 def cancel_order(transaction_id) :
     
-    # for this function i want to take a transaction_id, find all users with the following transaction id,
-    # get all user credentials
-    # get the client_order_id for all users orders
-    # and the submit requests to cancel each of them and return statuses to the client
+    userList = get_user_orders_from_transaction_id(transaction_id) 
+
+    if isinstance(userList, Error) :
+        return Error("userList resolved as Error") 
     
-    # TODO left off on writing the get_users_from_transaction_id function in database_interactions
+    returnData = {}
 
+    for user in userList :
+        api_key = user.api_key
+        api_secret= user.api_secret
+        paper_trading_bool = user.paper_trading
 
-    api_key = user.api_key
-    api_secret= user.api_secret
-    paper_trading_bool = user.paper_trading
+        trading_client = None
 
-    trading_client = None
+        try:
+            trading_client = TradingClient(api_key, api_secret, paper=paper_trading_bool)
 
-    try:
-        trading_client = TradingClient(api_key, api_secret, paper=paper_trading_bool)
-
-    except APIError as e:
-        return Error("Trading Client failed to initialize: ", e)
+        except APIError as e :
+            returnData[user.user] = "Trading Client failed to initialize"
+            continue 
         
+        order = None
+
+        try :
+            order= trading_client.get_order_by_client_id(user.client_order_id)
+        except Exception as e :
+            returnData[user.user] = "client_order_id no longer active"
+            continue
+
+        order_id = None
+
+        if isinstance(order, Order) :
+            order_id = order.id 
+        else :
+            order_id = order["id"]
+        
+        try :
+            trading_client.cancel_order_by_id(order_id)
+            returnData[user.user] = "Cancellation request successfully submitted"
+
+        except Exception as e :
+            returnData[user.user] = "Cancellation request failed to submit"
+            print(e)
+
+    return returnData
 
 
 

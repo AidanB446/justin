@@ -1,7 +1,7 @@
 
 import sqlite3
 
-from assests import Error
+from assests import Error, UserOrder
 
 db_directory_path = "./db/"
 
@@ -38,15 +38,23 @@ def create_account(name, api_key, api_secret) :
     cur.close()
     conn.close()
 
-
-def get_users_from_transaction_id(transaction_id) :
+def get_user_orders_from_transaction_id(transaction_id) :
+    conn = sqlite3.connect(db_directory_path + "orders.db")
+    cur = conn.cursor()
     
-    # return a list of all users who have this transaction_id
-    pass
+    cur.execute("SELECT * from orders WHERE transaction_id = ?", [transaction_id])
 
+    rows = cur.fetchall()  
+    
+    returnOrders = []
+    
+    for row in rows :
+        if None in row  or len(row) < 8:
+            return Error("a row with incomplete data was found") 
 
-
-
-
-
+        newOrder = UserOrder(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7])     
+        
+        returnOrders.append(newOrder)
+    
+    return returnOrders
 

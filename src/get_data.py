@@ -30,9 +30,3 @@ def get_latest_price(user, stockSymbols) :
 
     return return_dictionary
 
-
-
-
-
-
-

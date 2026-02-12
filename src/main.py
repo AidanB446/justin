@@ -1,6 +1,7 @@
 
 from assests import User
 from market_interactions import place_market_order
+from database_interactions import get_user_orders_from_transaction_id
 
 if __name__ == "__main__":
     api_key = "PKFASBVDSGPYDR4G7QPWCR47QD"
@@ -8,13 +9,9 @@ if __name__ == "__main__":
     name = "Aidan"
 
     user1 = User(name, api_key=api_key, api_secret=api_secret, paper_trading=True) 
-    user2 = User(name, api_key=api_key, api_secret=api_secret, paper_trading=True) 
-  
-    output1 = place_market_order([user1, user2], "AAPL", 5, "buy")
-
-    print(output1)
-
-
-
-   
+    
+    transaction_id = "bV8MvKbaQy4YAATX"
+    
+    output = get_user_orders_from_transaction_id(transaction_id=transaction_id)
+    
 

@@ -53,10 +53,7 @@ Limit Order -
 		- ALL FUNCTIONS FOR THE USER SHOULD GO INTO THE USER CLASS
 	
 		- minimal functions - 
-			cancel_order() - cancel order that has already been placed
-				with the cancel orders function, if he wants to be able to cancel 
-				the order for all affected accounts, we need to keep track of a
-				transaction that is unique to our app
+			* cancel_order() - 			
 			* get_order_status() - get order status
 			* get_order_info()	
 			* place_market_order() - placing a market order -
