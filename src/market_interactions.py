@@ -1,11 +1,12 @@
 
+from pydantic_core.core_schema import IsInstanceSchema
 from assests import Error
 from assests import new_transaction_id
 
 from database_interactions import insertDBOrder
 from database_interactions import get_user_orders_from_transaction_id
 
-from datetime import datetime
+from datetime import date, datetime
 
 from alpaca.common import RawData
 from alpaca.common.exceptions import APIError
@@ -223,7 +224,7 @@ def get_order_status(user, order_client_id) :
 
     return orderstatus
 
-
+# TODO log in database, cancel order request
 def cancel_order(transaction_id) :
     
     userList = get_user_orders_from_transaction_id(transaction_id) 
@@ -325,4 +326,43 @@ def get_stock_position(user, symbol) :
         return_obj["change_today"] = symbol_position["change_today"]
         
     return return_obj
+
+def close_position(user, symbol) :
+     
+    api_key = user.api_key
+    api_secret= user.api_secret
+    paper_trading_bool = user.paper_trading
+    
+    username = user.name
+
+    trading_client = None
+
+    try:
+        trading_client = TradingClient(api_key, api_secret, paper=paper_trading_bool)
+
+    except APIError as e:
+        return Error("Trading Client failed to initialize: ", e)
+    
+    close_position_handle = None
+   
+    try :
+        close_position_handle = trading_client.close_position(symbol)        
+
+    except Exception as e:
+        return Error("Error occured when trying to close position", e)
+    
+    client_order_id= None
+    
+    if isinstance(close_position_handle, Order) :
+        client_order_id= close_position_handle.client_order_id
+    else :
+        client_order_id = close_position_handle["client_order_id"]
+
+
+    client_transaction_id = new_transaction_id() 
+    
+    date_and_time = datetime.now().isoformat()
+   
+    log_handler= insertDBOrder("close position", symbol, "all", "close", username, client_order_id, client_transaction_id, date_and_time)
+
 

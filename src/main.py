@@ -1,6 +1,6 @@
 
-from assests import User
-from market_interactions import get_stock_position 
+from assests import Error, User
+from market_interactions import close_position
 
 if __name__ == "__main__":
     api_key = "PKFASBVDSGPYDR4G7QPWCR47QD"
@@ -8,9 +8,12 @@ if __name__ == "__main__":
     name = "Aidan"
 
     user1 = User(name, api_key=api_key, api_secret=api_secret, paper_trading=True) 
-    
 
-    get_stock_position(user1, "AAPL")
-
-
+    output = close_position(user1, "AAPL") 
+        
+    if isinstance(output, Error) :
+        print(output.error_message)
+        print("--") 
+        print("--") 
+        print(output.error)
 
