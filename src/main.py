@@ -1,6 +1,7 @@
 
-from assests import Error, User
-from market_interactions import close_position
+from assests import User
+
+from get_data import get_buying_power
 
 if __name__ == "__main__":
     api_key = "PKFASBVDSGPYDR4G7QPWCR47QD"
@@ -9,11 +10,8 @@ if __name__ == "__main__":
 
     user1 = User(name, api_key=api_key, api_secret=api_secret, paper_trading=True) 
 
-    output = close_position(user1, "AAPL") 
-        
-    if isinstance(output, Error) :
-        print(output.error_message)
-        print("--") 
-        print("--") 
-        print(output.error)
+
+    output  = get_buying_power(user1)
+    print(output)    
+
 

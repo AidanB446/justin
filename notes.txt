@@ -53,6 +53,7 @@ Limit Order -
 		- ALL FUNCTIONS FOR THE USER SHOULD GO INTO THE USER CLASS
 	
 		- minimal functions - 
+			* get_buying_power() - get your buying power
 			* close_position() - close your positon - remove your risk from stock entirely.
 			* get_positions() - get your position on stock
 			* cancel_order() - 			
@@ -61,9 +62,7 @@ Limit Order -
 			* place_market_order() - placing a market order -
 			* get_latest_price() - get latest price of stock
 			* place_limit_order() - placing a limit order - 
-			get_buying_power() - get your buying power
-			place_stop_loss() - safety hatch if stock goes down, place order with stock reaches 
-				this price
+			place_stop_loss() - safety hatch if stock goes down, place order when stock reaches this price
 			place_take_profit() - if price reaches this profit, sell get my profit
 			
 

@@ -6,7 +6,7 @@ from alpaca.data.historical import StockHistoricalDataClient
 
 from alpaca.trading.client import TradingClient
 
-from alpaca.trading.models import Order
+from alpaca.trading.models import Order, TradeAccount
 from alpaca.common import RawData
 
 from alpaca.trading.models import Order, Position
@@ -168,4 +168,33 @@ def get_stock_position(user, symbol) :
         return_obj["change_today"] = symbol_position["change_today"]
         
     return return_obj
+
+def get_buying_power(user) :
+
+    api_key = user.api_key
+    api_secret= user.api_secret
+    paper_trading_bool = user.paper_trading
+
+    accountData= None
+
+    try:
+        trading_client = TradingClient(api_key, api_secret, paper=paper_trading_bool)
+        
+        accountData = trading_client.get_account()
+
+    except APIError as e:
+        return Error("Trading Client failed to initialize: ", e)
+    
+    buying_power = None
+    cash = None
+
+    if isinstance(accountData, TradeAccount) :
+        buying_power = accountData.buying_power
+        cash = accountData.cash
+
+    else  :
+        buying_power = accountData["buying_power"]
+        cash = accountData["cash"]
+    
+    return {"cash": cash, "buying_power": buying_power}
 
