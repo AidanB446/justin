@@ -9,6 +9,9 @@ orders.db - db for orders that have succeded
 		client_order_id - TEXT
 		transaction_id - TEXT - ID linked to the order placed in app.	
 		date - TEXT -
+	
+
+
 
 accounts.db - db for all alpaca accounts that are users
 	
