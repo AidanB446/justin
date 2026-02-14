@@ -28,5 +28,11 @@
 		* place_limit_order() - placing a limit order - 
 
 - TODO 
+	- create endpoints -
+		to start	
+		- place_iterative_market_order
+		- place_iterative_limit_order
+
+		
 
 
