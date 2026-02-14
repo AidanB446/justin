@@ -21,14 +21,19 @@ def insertDBOrder(ordertype, symbol, qty, side, user, client_order_id, transacti
     cur.close()
     conn.close()
 
-def create_account(name, api_key, api_secret) :
+def create_account(user) :
+    
+    name = user.name    
+    api_key = user.api_key
+    api_secret = user.api_secret
+    paper_trading = user.paper_trading
 
     conn = sqlite3.connect(db_directory_path + "accounts.db")
 
     cur = conn.cursor() 
 
     try :
-        cur.execute("INSERT INTO accounts VALUES (?, ?, ?)", [api_key, api_secret, name])
+        cur.execute("INSERT INTO accounts VALUES (?, ?, ?, ?)", [api_key, api_secret, name, int(paper_trading)])
 
     except Exception as e:
         return_error = Error("error inserting new order", error=e)         
