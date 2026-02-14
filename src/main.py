@@ -41,6 +41,12 @@ def login():
 @app.route("/usermod/<method>", methods=["POST"])
 def usermod(method) :
     
+    # auth logic here
+    supplied_token = request.headers.get("Authorization") 
+
+    if not supplied_token == CURRENT_MASTER_TOKEN :
+        return {"error": "unauthorized"}, 401, {} 
+
     match method:
         case "create_account" :
             data = request.get_json()

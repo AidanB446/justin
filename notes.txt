@@ -28,6 +28,5 @@
 		* place_limit_order() - placing a limit order - 
 
 - TODO 
-	intergrate auth into the already written methods in main	
 
 
