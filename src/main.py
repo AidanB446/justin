@@ -4,16 +4,39 @@ from flask_cors import CORS
 
 from database_interactions import create_account, delete_account, read_master_hash
 
-from assests import User, password_auth, sha256_encode
-
-MASTER_HASH = read_master_hash("Justin")
+from assests import User, password_auth, create_new_master_token
 
 app = Flask(__name__)
 CORS(app)
 
+MASTER_HASH = read_master_hash("Justin")
+print(MASTER_HASH)
+CURRENT_MASTER_TOKEN = None
+
 @app.route("/")
 def hello() :
     return "site land"
+
+
+@app.route("/login", methods=["POST"])
+def login():
+    global MASTER_HASH
+    global CURRENT_MASTER_TOKEN
+    
+    data = request.get_json()  
+
+    if not data or "password" not in data:
+        return {"error": "json body missing key 'password'"}, 400
+
+    user_password = data["password"]
+
+    if password_auth(user_password, MASTER_HASH):
+        new_master_token = create_new_master_token()
+        CURRENT_MASTER_TOKEN = new_master_token
+        return {"token": new_master_token}, 200
+    else:
+        return {"error": "authentication failed"}, 401
+
 
 @app.route("/usermod/<method>", methods=["POST"])
 def usermod(method) :

@@ -1,37 +1,17 @@
 
 import requests
 
-data = {
-        "api_key" : "asdf",
-        "api_secret" : "asdf",
-        "name" : "John",
-        "paper_trading" : "1",
+url = "http://localhost:8000/login"
+
+login_attempt = {
+        "password": "password",
         }
 
-delete_data = {
-        "name": "John"
-        }
+request1 = requests.post(url, json=login_attempt)
 
-url = "http://localhost:8000/usermod/create_account"
-request1 = requests.post(url, json=data)
+user_token = request1.json()["token"]
 
-print("--")
-print(request1.status_code)
-print("--")
-print(request1.text)
-print("--")
 
-input("Enter to continue")
-
-url = "http://localhost:8000/usermod/delete_account"
-
-request1 = requests.post(url, json=delete_data)
-
-print("--")
-print(request1.status_code)
-print("--")
-print(request1.text)
-print("--")
 
 
 

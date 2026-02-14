@@ -55,3 +55,9 @@ def sha256_encode(data: str) -> str:
 def password_auth(user_password, masterhash) :
     return bool(sha256_encode(user_password) == masterhash)
 
+def create_new_master_token() :
+    characters = string.ascii_letters + string.digits
+    transaction_id= ''.join(secrets.choice(characters) for _ in range(30))
+    
+    return transaction_id
+

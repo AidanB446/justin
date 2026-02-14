@@ -28,8 +28,6 @@
 		* place_limit_order() - placing a limit order - 
 
 - TODO 
-	-- setup and add auth
-		- store hashed password of the user	
-
+	intergrate auth into the already written methods in main	
 
 
