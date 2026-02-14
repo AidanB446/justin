@@ -1,5 +1,7 @@
 alpaca-py
 pytz
+Flask
+flask-cors
 
 
 

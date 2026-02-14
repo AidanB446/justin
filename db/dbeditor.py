@@ -6,7 +6,7 @@ conn = sqlite3.connect("./accounts.db")
 cur = conn.cursor()
 
 cur.execute("""
-    DELETE FROM accounts;
+    DELETE FROM accounts WHERE name = 'John';
             """)
 
 cur.close()

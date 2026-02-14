@@ -43,6 +43,23 @@ def create_account(user) :
     cur.close()
     conn.close()
 
+def delete_account(username) :
+   
+    conn = sqlite3.connect(db_directory_path + "accounts.db")
+
+    cur = conn.cursor() 
+
+    try :
+        cur.execute("DELETE FROM accounts WHERE name = ?", [username])
+
+    except Exception as e:
+        return_error = Error("error attempting to delete user", error=e)         
+        return return_error
+
+    conn.commit() 
+    cur.close()
+    conn.close()
+
 def get_user_orders_from_transaction_id(transaction_id) :
     conn = sqlite3.connect(db_directory_path + "orders.db")
     cur = conn.cursor()
