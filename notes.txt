@@ -29,4 +29,7 @@
 
 - TODO 
 	-- setup and add auth
+		- store hashed password of the user	
+
+
 

@@ -1,12 +1,12 @@
 
 import sqlite3
 
-conn = sqlite3.connect("./accounts.db")
+conn = sqlite3.connect("./master.db")
 
 cur = conn.cursor()
 
 cur.execute("""
-    DELETE FROM accounts WHERE name = 'John';
+            CREATE TABLE master (username TEXT, hash_password TEXT)
             """)
 
 cur.close()

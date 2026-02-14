@@ -1,10 +1,12 @@
 
-from flask import Flask, request, jsonify
+from flask import Flask, request 
 from flask_cors import CORS
 
-from database_interactions import create_account, delete_account
+from database_interactions import create_account, delete_account, read_master_hash
 
-from assests import User
+from assests import User, password_auth, sha256_encode
+
+MASTER_HASH = read_master_hash("Justin")
 
 app = Flask(__name__)
 CORS(app)
@@ -50,7 +52,18 @@ def usermod(method) :
 
         case "delete_account":
             data = request.get_json()
-            username = data["name"]
+            
+            username = None
+
+            try :
+                username = data["name"]
+            except KeyError as _ :
+                return  (
+                    {"error": "json body missing key data"}, # body
+                    400, 
+                    {} # headers
+                )
+
             delete_handle = delete_account(username) 
 
             if delete_handle != None :
@@ -64,10 +77,6 @@ def usermod(method) :
             return  ({}, 200, {})
 
     return ""
-
-
-
-
 
 app.run(port=8000)
 

@@ -1,12 +1,9 @@
-
 import secrets
 import string
-
 import sqlite3
-
+import hashlib
 
 class User :
-
     def __init__(self, name, api_key, api_secret, paper_trading) :
         self.name = name 
         self.api_key = api_key 
@@ -14,13 +11,11 @@ class User :
         self.paper_trading = paper_trading  
 
 class Error :
-
     def __init__(self, error_message, error=None) :
         self.error_message = error_message
         self.error= error 
 
 class UserOrder:
-
     def __init__(self, ordertype, symbol, qty, side, user, client_order_id, transaction_id, date) :
         self.ordertype= ordertype 
         self.symbol= symbol 
@@ -51,4 +46,12 @@ def new_transaction_id():
 
     return transaction_id 
     
+def sha256_encode(data: str) -> str:
+    data_bytes = data.encode("utf-8")
+    hash_object = hashlib.sha256(data_bytes)
+    hex_digest = hash_object.hexdigest()
+    return hex_digest
+
+def password_auth(user_password, masterhash) :
+    return bool(sha256_encode(user_password) == masterhash)
 
