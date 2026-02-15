@@ -34,7 +34,6 @@
 
 	- create endpoints -
 		to start	
-		- place_iterative_market_order
 		- place_iterative_limit_order
 
 		

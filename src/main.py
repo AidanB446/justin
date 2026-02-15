@@ -3,14 +3,15 @@ from flask import Flask, request
 from flask_cors import CORS
 
 from database_interactions import create_account, delete_account, read_master_hash
+from market_interactions import place_market_order
 
-from assests import User, password_auth, create_new_master_token
+from assests import User, password_auth, create_new_master_token, Error
 
 app = Flask(__name__)
 CORS(app)
 
 MASTER_HASH = read_master_hash("Justin")
-CURRENT_MASTER_TOKEN = None
+CURRENT_MASTER_TOKEN = create_new_master_token()
 
 @app.route("/")
 def hello() :
@@ -104,13 +105,61 @@ def usermod(method) :
             return  ({}, 200, {})
 
     return ""
+    
+@app.route("/place_iterative_market_order", methods=["POST"])
+def place_iterative_market_order() :
+ 
+    # auth logic here
+    supplied_token = request.headers.get("Authorization") 
 
-user1 = User("Aidan")
-
-user1.attempt_getdbinfo()
-
-print(user1.api_key)
+    if not supplied_token == CURRENT_MASTER_TOKEN :
+        return {"error": "unauthorized"}, 401, {} 
 
 
-# app.run(port=8000)
+    data = request.get_json()
+    users = None # list of users names
+    stockSymbol = None
+    stockQty = None
+    stockSide = None
 
+    try :
+        users = data["users"] 
+        stockSymbol = data["symbol"]
+        stockQty = int(data["qty"])
+        stockSide = data["side"] 
+
+    except KeyError as _ :
+        return  (
+            {"error": "json body missing key data"}, 
+            400, 
+            {} # headers
+        )
+
+    userRegistrationMap = {} 
+    userList = [] 
+
+    for user in users :
+        newUser = User(user)
+        getUserHandle = newUser.attempt_getdbinfo()
+        
+        if not getUserHandle :
+            userRegistrationMap[user] = "user not found" 
+            continue
+    
+        userList.append(newUser) 
+        userRegistrationMap[user] = newUser     
+
+    orderHandle = place_market_order(userList, stockSymbol, stockQty, stockSide)
+
+    if isinstance(orderHandle, Error) :
+        return  (
+            {"error": "function failed due to bad data"}, 
+            400, 
+            {} # headers
+        )
+
+    return orderHandle, 200, {}
+
+print(CURRENT_MASTER_TOKEN)
+
+app.run(port=8000)

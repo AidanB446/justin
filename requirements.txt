@@ -2,6 +2,3 @@ alpaca-py
 pytz
 Flask
 flask-cors
-python-lsp-server
-
-
