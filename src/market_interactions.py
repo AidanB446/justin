@@ -113,9 +113,9 @@ def place_limit_order(users, stockSymbol, stockOperationQty, side, limit) :
             continue
 
         limit_order_data = LimitOrderRequest(
-            symbol=stockSymbol,
-            limit_price=limit,
-            qty=stockOperationQty,
+            symbol=str(stockSymbol),
+            limit_price=float(limit),
+            qty=int(stockOperationQty),
             side=orderside,
             time_in_force=TimeInForce.GTC,
         )

@@ -3,7 +3,7 @@ from flask import Flask, request
 from flask_cors import CORS
 
 from database_interactions import create_account, delete_account, read_master_hash
-from market_interactions import place_market_order
+from market_interactions import place_market_order, place_limit_order
 
 from assests import User, password_auth, create_new_master_token, Error
 
@@ -160,6 +160,62 @@ def place_iterative_market_order() :
 
     return orderHandle, 200, {}
 
-print(CURRENT_MASTER_TOKEN)
+    
+@app.route("/place_iterative_limit_order", methods=["POST"])
+def place_iterative_limit_order() :
+ 
+    supplied_token = request.headers.get("Authorization") 
 
+    if not supplied_token == CURRENT_MASTER_TOKEN :
+        return {"error": "unauthorized"}, 401, {} 
+
+
+    data = request.get_json()
+    users = None # list of users names
+    stockSymbol = None
+    stockQty = None
+    stockSide = None
+    stockLimit = None    
+
+    try :
+        users = data["users"] 
+        stockSymbol = data["symbol"]
+        stockQty = int(data["qty"])
+        stockSide = data["side"] 
+        stockLimit = data["limit"] 
+
+    except KeyError as _ :
+        return  (
+            {"error": "json body missing key data"}, 
+            400, 
+            {} # headers
+        )
+
+    userRegistrationMap = {} 
+    userList = [] 
+
+    for user in users :
+        newUser = User(user)
+        getUserHandle = newUser.attempt_getdbinfo()
+        
+        if not getUserHandle :
+            userRegistrationMap[user] = "user not found" 
+            continue
+    
+        userList.append(newUser) 
+        userRegistrationMap[user] = newUser     
+
+    orderHandle = place_limit_order(userList, stockSymbol, stockQty, stockSide, stockLimit)
+
+    if isinstance(orderHandle, Error) :
+        return  (
+            {"error": "function failed due to bad data"}, 
+            400, 
+            {} # headers
+        )
+
+    return orderHandle, 200, {}
+
+print(CURRENT_MASTER_TOKEN)
 app.run(port=8000)
+

@@ -6,15 +6,16 @@ data = {
         "symbol": "AAPL",
         "qty": "5",
         "side": "buy",
+        "limit": "192.57",
         }
 
 headers = {
-        "Authorization": "dwAyreGhz95HSpMynbEA3Kgm3KDnd4"
+        "Authorization" : "tgO7mjRWAGLdOUHyTFtFYSz48YEDfO",
 
         }
 
 
-url = "http://localhost:8000/place_iterative_market_order"
+url = "http://localhost:8000/place_iterative_limit_order"
 
 request1 = requests.post(url, json=data, headers=headers)
 

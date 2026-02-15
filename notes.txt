@@ -28,14 +28,15 @@
 		* place_limit_order() - placing a limit order - 
 
 - TODO 
+	
+	-- full app testing
 
-	- make sure that the create account checks to make sure 
-		the name doesn't already exist in database
 
 	- create endpoints -
-		to start	
-		- place_iterative_limit_order
-
-		
+		- get stock information - 
+		- order status - 
+		- get transactions - 	
+		- get_position - 
+		- close_stock_entirely - 
 
 
