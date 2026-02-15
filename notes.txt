@@ -28,6 +28,10 @@
 		* place_limit_order() - placing a limit order - 
 
 - TODO 
+
+	- make sure that the create account checks to make sure 
+		the name doesn't already exist in database
+
 	- create endpoints -
 		to start	
 		- place_iterative_market_order

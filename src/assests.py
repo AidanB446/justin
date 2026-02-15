@@ -4,11 +4,29 @@ import sqlite3
 import hashlib
 
 class User :
-    def __init__(self, name, api_key, api_secret, paper_trading) :
+    def __init__(self, name, api_key=None, api_secret=None, paper_trading=None) :
         self.name = name 
         self.api_key = api_key 
         self.api_secret= api_secret 
         self.paper_trading = paper_trading  
+    
+    def attempt_getdbinfo(self) :
+    
+        conn = sqlite3.connect("./db/" + "accounts.db")  
+        cur = conn.cursor()
+    
+        cur.execute("SELECT * FROM accounts WHERE name = ?", [self.name])
+        
+        rows = cur.fetchone()    
+        
+        if len(rows) == 0 :
+            return False  
+
+        self.api_key = rows[0] 
+        self.api_secret = rows[1] 
+        self.paper_trading = bool(rows[3]) 
+        
+        return True
 
 class Error :
     def __init__(self, error_message, error=None) :

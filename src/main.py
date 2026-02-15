@@ -10,13 +10,11 @@ app = Flask(__name__)
 CORS(app)
 
 MASTER_HASH = read_master_hash("Justin")
-print(MASTER_HASH)
 CURRENT_MASTER_TOKEN = None
 
 @app.route("/")
 def hello() :
     return "site land"
-
 
 @app.route("/login", methods=["POST"])
 def login():
@@ -107,5 +105,12 @@ def usermod(method) :
 
     return ""
 
-app.run(port=8000)
+user1 = User("Aidan")
+
+user1.attempt_getdbinfo()
+
+print(user1.api_key)
+
+
+# app.run(port=8000)
 

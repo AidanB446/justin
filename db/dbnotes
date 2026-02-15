@@ -15,6 +15,7 @@ accounts.db - db for all alpaca accounts that are users
 		api_key - TEXT - key
 		api_secret - TEXT - secret
 		name - TEXT - name of the given user	
+		paper_trading - integer	- integer represents a boolean
 
 master.db
 	
