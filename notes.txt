@@ -33,7 +33,6 @@
 	- create endpoints -
 		- order status - 
 		- get transactions - 	
-		- get position
 		- close_stock_entirely - 
 
 

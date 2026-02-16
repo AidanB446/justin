@@ -4,7 +4,7 @@ from flask_cors import CORS
 
 from database_interactions import create_account, delete_account, read_master_hash
 
-from get_data import get_stock_info
+from get_data import get_stock_info, get_stock_position
 
 from market_interactions import place_market_order, place_limit_order
 
@@ -227,7 +227,13 @@ def getstock() :
     if auth_header != CURRENT_MASTER_TOKEN  or auth_header == None:
         return {"error": "auth failed"}, 401, {}
     
-    stockSymbol = request.get_json()["symbol"]  
+    stockSymbol = None
+
+    try :
+        stockSymbol = request.get_json()["symbol"]  
+    
+    except Exception as _:
+        return {"error": "insufficient json body data"}, 400, {}
 
     stockData = get_stock_info(stockSymbol)   
 
@@ -235,6 +241,43 @@ def getstock() :
         return {"error": "couldn't get stock data"}, 503, {}
 
     return jsonify(stockData) 
+
+@app.route("/get-stock-position", methods=["POST"])
+def get_pos() :
+    auth_header = request.headers.get("Authorization") 
+
+    if auth_header != CURRENT_MASTER_TOKEN  or auth_header == None:
+        return {"error": "auth failed"}, 401, {}
+ 
+    data = request.get_json()
+    
+    symbol = None
+    username = None
+
+    try :
+        username = data["name"]
+        symbol = data["symbol"] 
+ 
+    except Exception as _:
+        return {"error": "insufficient json body data"}, 400, {}
+
+    newUser = User(username)
+    pos_error = newUser.attempt_getdbinfo()
+
+    if isinstance(pos_error, Error) :
+        return {"error": "user not found"}, 404, {}
+    
+    position_data = get_stock_position(newUser, symbol)
+    
+    if isinstance(position_data, Error) :
+        
+        print(position_data.error_message)
+        print(position_data.error)
+
+        return {"error": "couldn't get position"}, 400, {}
+
+    return ""
+
 
 app.run(port=8000)
 

@@ -19,13 +19,14 @@ data = request1.json()
 
 token = data["token"]
 
-url = "http://localhost:8000/get-stock-data"
+url = "http://localhost:8000/get-stock-position"
 
 headers = {
         "Authorization": token
         }
 
 requestData = {
+        "name": "Aidan", 
         "symbol": "AAPL"
         }
 
