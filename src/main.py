@@ -276,8 +276,9 @@ def get_pos() :
 
         return {"error": "couldn't get position"}, 400, {}
 
-    return ""
+    return position_data, 200, {}
+
+# app.run(port=8000)
 
 
-app.run(port=8000)
 

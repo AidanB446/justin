@@ -28,8 +28,6 @@
 		* place_limit_order() - placing a limit order - 
 
 - TODO 
-	
-	-- full app testing
 	- create endpoints -
 		- order status - 
 		- get transactions - 	

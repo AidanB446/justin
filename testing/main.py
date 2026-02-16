@@ -7,9 +7,7 @@ logindata = {
 
 headers = {
         "Authorization" : "tgO7mjRWAGLdOUHyTFtFYSz48YEDfO",
-
         }
-
 
 url = "http://localhost:8000/login"
 
@@ -27,7 +25,7 @@ headers = {
 
 requestData = {
         "name": "Aidan", 
-        "symbol": "AAPL"
+        "symbol": "TSLA"
         }
 
 request2 = requests.post(url, json=requestData, headers=headers)
