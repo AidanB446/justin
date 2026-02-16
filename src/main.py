@@ -1,10 +1,11 @@
 
+import sqlite3
 from flask import Flask, jsonify, request 
 from flask_cors import CORS
 
 from database_interactions import create_account, delete_account, read_master_hash
 
-from get_data import get_stock_info, get_stock_position
+from get_data import get_order_info, get_stock_info, get_stock_position
 
 from market_interactions import place_market_order, place_limit_order
 
@@ -278,7 +279,74 @@ def get_pos() :
 
     return position_data, 200, {}
 
-# app.run(port=8000)
+@app.route("/get-order-status", methods=["POST"])
+def get_user_order_status() :
+    auth_header = request.headers.get("Authorization") 
+
+    if auth_header != CURRENT_MASTER_TOKEN  or auth_header == None:
+        return {"error": "auth failed"}, 401, {}
+ 
+    data = request.get_json()
+    
+    username = None
+    transaction_id = None
+
+    try :
+        username = data["name"]
+        transaction_id = data["transaction_id"]
+ 
+    except Exception as _:
+        return {"error": "insufficient json body data"}, 400, {}
+
+    newUser = User(username)
+    pos_error = newUser.attempt_getdbinfo()
+
+    if isinstance(pos_error, Error) :
+        return {"error": "user not found"}, 404, {}
+    
+    client_order_id = None
+    
+    conn = sqlite3.connect("./db/orders.db") 
+    
+    cur = conn.cursor()
+
+    cur.execute("SELECT client_order_id FROM orders WHERE user = ? AND transaction_id = ?", [username, transaction_id]) 
+    
+    try :
+        client_order_id = cur.fetchone()[0]
+    except Exception as _ :
+        return {"error": "order not found"}, 404, {}
+
+
+    cur.close()
+    conn.close() 
+    
+    user = User(username)
+    err_result = user.attempt_getdbinfo()
+    
+    if isinstance(err_result, Error) :
+        return {"error": "user not found"}, 404, {}
+    
+    order_data = get_order_info(user, client_order_id)
+   
+    if isinstance(order_data, Error) :
+        return {"error": "could not find order"}, 404, {}
+
+    return order_data, 200, {}
+
+app.run(port=8000)
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
