@@ -1,12 +1,8 @@
 
 import requests
 
-data = {
-        "users": ["Aidan"],
-        "symbol": "AAPL",
-        "qty": "5",
-        "side": "buy",
-        "limit": "192.57",
+logindata = {
+        "password": "password"
         }
 
 headers = {
@@ -15,13 +11,26 @@ headers = {
         }
 
 
-url = "http://localhost:8000/place_iterative_limit_order"
+url = "http://localhost:8000/login"
 
-request1 = requests.post(url, json=data, headers=headers)
+request1 = requests.post(url, json=logindata)
 
-print(request1.status_code)
-print("---")
+data = request1.json()
 
-print(request1.text)
-print("---")
+token = data["token"]
+
+url = "http://localhost:8000/get-stock-data"
+
+headers = {
+        "Authorization": token
+        }
+
+requestData = {
+        "symbol": "AAPL"
+        }
+
+request2 = requests.post(url, json=requestData, headers=headers)
+
+print(request2.text)
+
 

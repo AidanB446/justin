@@ -1,8 +1,11 @@
 
-from flask import Flask, request 
+from flask import Flask, jsonify, request 
 from flask_cors import CORS
 
 from database_interactions import create_account, delete_account, read_master_hash
+
+from get_data import get_stock_info
+
 from market_interactions import place_market_order, place_limit_order
 
 from assests import User, password_auth, create_new_master_token, Error
@@ -43,7 +46,7 @@ def usermod(method) :
     # auth logic here
     supplied_token = request.headers.get("Authorization") 
 
-    if not supplied_token == CURRENT_MASTER_TOKEN :
+    if not supplied_token == CURRENT_MASTER_TOKEN  or supplied_token == None:
         return {"error": "unauthorized"}, 401, {} 
 
     match method:
@@ -112,7 +115,7 @@ def place_iterative_market_order() :
     # auth logic here
     supplied_token = request.headers.get("Authorization") 
 
-    if not supplied_token == CURRENT_MASTER_TOKEN :
+    if not supplied_token == CURRENT_MASTER_TOKEN or supplied_token == None:
         return {"error": "unauthorized"}, 401, {} 
 
 
@@ -166,7 +169,7 @@ def place_iterative_limit_order() :
  
     supplied_token = request.headers.get("Authorization") 
 
-    if not supplied_token == CURRENT_MASTER_TOKEN :
+    if not supplied_token == CURRENT_MASTER_TOKEN or supplied_token == None:
         return {"error": "unauthorized"}, 401, {} 
 
 
@@ -216,6 +219,22 @@ def place_iterative_limit_order() :
 
     return orderHandle, 200, {}
 
-print(CURRENT_MASTER_TOKEN)
+@app.route("/get-stock-data", methods=["POST"])
+def getstock() :
+    
+    auth_header = request.headers.get("Authorization") 
+
+    if auth_header != CURRENT_MASTER_TOKEN  or auth_header == None:
+        return {"error": "auth failed"}, 401, {}
+    
+    stockSymbol = request.get_json()["symbol"]  
+
+    stockData = get_stock_info(stockSymbol)   
+
+    if isinstance(stockData, Error) :
+        return {"error": "couldn't get stock data"}, 503, {}
+
+    return jsonify(stockData) 
+
 app.run(port=8000)
 

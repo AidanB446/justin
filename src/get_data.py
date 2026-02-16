@@ -1,4 +1,6 @@
 
+import requests
+import sqlite3
 from alpaca.common.exceptions import APIError
 
 from alpaca.data.requests import StockLatestTradeRequest
@@ -11,7 +13,7 @@ from alpaca.common import RawData
 
 from alpaca.trading.models import Order, Position
 
-from assests import Error
+from assests import Error, User
 
 def get_latest_price(user, stockSymbols) :
     api_key = user.api_key  
@@ -168,6 +170,46 @@ def get_stock_position(user, symbol) :
         return_obj["change_today"] = symbol_position["change_today"]
         
     return return_obj
+
+def get_stock_info(symbol) :
+
+    name = Error
+    
+    conn = sqlite3.connect("./db/accounts.db") 
+    cur = conn.cursor()
+
+    cur.execute("SELECT name FROM accounts")    
+
+    name = str(cur.fetchone()[0])
+
+    user = User(name) 
+    user.attempt_getdbinfo()
+
+    url = f"https://data.alpaca.markets/v2/stocks/{symbol}/trades/latest"
+
+    headers = {
+        "APCA-API-KEY-ID": user.api_key,
+        "APCA-API-SECRET-KEY": user.api_secret 
+    }
+
+    response = requests.get(url, headers=headers)
+    
+    if response.status_code != 200 :
+        return Error("http request to data.alpaca.markets/ resolved in other than 200")
+
+    raw_data = response.json()
+
+    parsed_data = {
+        "ticker_symbol": raw_data["symbol"],
+        "trade_price_usd": raw_data["trade"]["p"],
+        "trade_size_shares": raw_data["trade"]["s"],
+        "trade_timestamp_utc": raw_data["trade"]["t"],
+        "trade_exchange_code": raw_data["trade"].get("x"),
+        "trade_id": raw_data["trade"].get("i"),
+        "trade_conditions": raw_data["trade"].get("c")
+    }
+    
+    return parsed_data
 
 def get_buying_power(user) :
 
