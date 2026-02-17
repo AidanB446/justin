@@ -3,7 +3,7 @@ import sqlite3
 from flask import Flask, jsonify, request 
 from flask_cors import CORS
 
-from database_interactions import create_account, delete_account, read_master_hash
+from database_interactions import create_account, delete_account, read_master_hash, get_orders_by_time
 
 from get_data import get_order_info, get_stock_info, get_stock_position
 
@@ -375,19 +375,12 @@ def close_total_stock_position() :
 
     return {"status": "sucess"}, 200, {}
 
-app.run(port=8000)
+# app.run(port=8000)
 
 
+# TODO tests get_orders_by_time
 
-
-
-
-
-
-
-
-
-
+get_orders_by_time()
 
 
 

@@ -1,7 +1,5 @@
 
-from os import execle
 import sqlite3
-from types import NoneType
 
 from assests import Error, UserOrder
 
@@ -98,5 +96,47 @@ def read_master_hash(masteruser) :
     queryResponse = queryResponse[0] 
     
     return queryResponse
+
+def get_orders_by_time(year, month) :
+    
+    conn = sqlite3.connect(db_directory_path + "orders.db")
+
+    cur = conn.cursor()
+
+    cur.execute("SELECT date FROM orders")
+
+    rows = cur.fetchall()
+    
+    returnRows = [] # rows that were gathered
+
+    for row in rows :
+        dateString = None
+
+        try : 
+            dateString = row[0]
+            if dateString == None :
+                # find better solution for error handling
+                continue
+
+        except Exception as _ :
+            # find better solution for error handling
+            continue  
+
+        dateString = str(dateString) 
+        dateString = dateString.split("T")[0]
+            
+        # atp dateString looks like "2000-02-13"
+        year = int(dateString.split("-")[0])
+        month = int(dateString.split("-")[1])
+
+        print(year, month)
+    
+        # TODO
+        # make sure you compare user input with db data as integers for accuracy
+
+
+    cur.close()
+    conn.close()
+
 
 
