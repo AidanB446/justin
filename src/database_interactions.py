@@ -32,12 +32,7 @@ def create_account(user) :
 
     cur = conn.cursor() 
 
-    try :
-        cur.execute("INSERT INTO accounts VALUES (?, ?, ?, ?)", [api_key, api_secret, name, int(paper_trading)])
-
-    except Exception as e:
-        return_error = Error("error inserting new order", error=e)         
-        return return_error
+    cur.execute("INSERT INTO accounts VALUES (?, ?, ?, ?)", [api_key, api_secret, name, int(paper_trading)])
 
     conn.commit() 
     cur.close()
@@ -49,12 +44,7 @@ def delete_account(username) :
 
     cur = conn.cursor() 
 
-    try :
-        cur.execute("DELETE FROM accounts WHERE name = ?", [username])
-
-    except Exception as e:
-        return_error = Error("error attempting to delete user", error=e)         
-        return return_error
+    cur.execute("DELETE FROM accounts WHERE name = ?", [username])
 
     conn.commit() 
     cur.close()
@@ -71,8 +61,6 @@ def get_user_orders_from_transaction_id(transaction_id) :
     returnOrders = []
     
     for row in rows :
-        if None in row  or len(row) < 8:
-            return Error("a row with incomplete data was found") 
 
         newOrder = UserOrder(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7])     
         
@@ -97,46 +85,25 @@ def read_master_hash(masteruser) :
     
     return queryResponse
 
-def get_orders_by_time(year, month) :
+def get_orders_by_time(year, month):
+    month_str = f"{int(month):02d}"
+    year_str = str(int(year))
     
     conn = sqlite3.connect(db_directory_path + "orders.db")
-
     cur = conn.cursor()
 
-    cur.execute("SELECT date FROM orders")
-
+    query = """
+        SELECT * FROM orders 
+        WHERE strftime('%Y', date) = ? 
+        AND strftime('%m', date) = ?
+    """
+    
+    cur.execute(query, (year_str, month_str))
     rows = cur.fetchall()
-    
-    returnRows = [] # rows that were gathered
-
-    for row in rows :
-        dateString = None
-
-        try : 
-            dateString = row[0]
-            if dateString == None :
-                # find better solution for error handling
-                continue
-
-        except Exception as _ :
-            # find better solution for error handling
-            continue  
-
-        dateString = str(dateString) 
-        dateString = dateString.split("T")[0]
-            
-        # atp dateString looks like "2000-02-13"
-        year = int(dateString.split("-")[0])
-        month = int(dateString.split("-")[1])
-
-        print(year, month)
-    
-        # TODO
-        # make sure you compare user input with db data as integers for accuracy
-
 
     cur.close()
     conn.close()
 
+    return rows
 
 

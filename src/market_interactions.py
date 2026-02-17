@@ -1,4 +1,5 @@
 
+from math import log
 from assests import Error
 from assests import new_transaction_id
 
@@ -145,17 +146,17 @@ def place_limit_order(users, stockSymbol, stockOperationQty, side, limit) :
 
     return return_data
 
-# TODO log in database, cancel order request
-def cancel_order(transaction_id) :
+def cancel_orders(users : list[str], transaction_id) :
     
     userList = get_user_orders_from_transaction_id(transaction_id) 
-
-    if isinstance(userList, Error) :
-        return Error("userList resolved as Error") 
     
     returnData = {}
 
     for user in userList :
+        
+        if user.user not in users :
+            continue
+
         api_key = user.api_key
         api_secret= user.api_secret
         paper_trading_bool = user.paper_trading
@@ -187,6 +188,8 @@ def cancel_order(transaction_id) :
         try :
             trading_client.cancel_order_by_id(order_id)
             returnData[user.user] = "Cancellation request successfully submitted"
+            
+            insertDBOrder("cancel request", user.symbol, user.qty, user.side, user.user, user.client_order_id, user.transaction_id, user.date)
 
         except Exception as e :
             returnData[user.user] = "Cancellation request failed to submit"
@@ -208,7 +211,7 @@ def close_position(user, symbol) :
         trading_client = TradingClient(api_key, api_secret, paper=paper_trading_bool)
 
     except APIError as e:
-        return Error("Trading Client failed to initialize: ", e)
+        return Error("alpaca error", e)
     
     close_position_handle = None
    
@@ -216,7 +219,7 @@ def close_position(user, symbol) :
         close_position_handle = trading_client.close_position(symbol)        
 
     except Exception as e:
-        return Error("Couldn't close position", e)
+        return Error("alpaca error", e)
     
     client_order_id= None
     
@@ -232,4 +235,6 @@ def close_position(user, symbol) :
    
     log_handler= insertDBOrder("close position", symbol, "all", "close", username, client_order_id, client_transaction_id, date_and_time)
 
+    if isinstance(log_handler, Error) :
+        return Error("Couldn't write to db successfully", log_handler.error)
 

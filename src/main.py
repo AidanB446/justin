@@ -7,7 +7,7 @@ from database_interactions import create_account, delete_account, read_master_ha
 
 from get_data import get_order_info, get_stock_info, get_stock_position
 
-from market_interactions import close_position, place_market_order, place_limit_order
+from market_interactions import cancel_orders, close_position, place_market_order, place_limit_order
 
 from assests import User, password_auth, create_new_master_token, Error
 
@@ -73,12 +73,8 @@ def usermod(method) :
                 )
 
             new_user = User(username, api_key, api_secret, int(paper_trading))
-            err = create_account(new_user)
-
-            if err != None :
-                return  (
-                    {"error": "couldn't create a new user, could be due to bad input data"}, # body
-                    500, {})
+            
+            create_account(new_user)
 
             return  ({}, 200, {})
 
@@ -96,16 +92,8 @@ def usermod(method) :
                     {} # headers
                 )
 
-            delete_handle = delete_account(username) 
-
-            if delete_handle != None :
-                print(delete_handle.error)
-                print(delete_handle.error_message)
-                return  (
-                    {"error": "Internal Server Error, couldn't delete account"}, # body
-                    500, {}
-                )
-
+            delete_account(username) 
+            
             return  ({}, 200, {})
 
     return ""
@@ -156,9 +144,10 @@ def place_iterative_market_order() :
     orderHandle = place_market_order(userList, stockSymbol, stockQty, stockSide)
 
     if isinstance(orderHandle, Error) :
+        # bad data 
         return  (
             {"error": "function failed due to bad data"}, 
-            400, 
+            422, 
             {} # headers
         )
 
@@ -214,7 +203,7 @@ def place_iterative_limit_order() :
     if isinstance(orderHandle, Error) :
         return  (
             {"error": "function failed due to bad data"}, 
-            400, 
+            422, 
             {} # headers
         )
 
@@ -371,16 +360,56 @@ def close_total_stock_position() :
         if error_message == "Trading Client failed to initialize" :
             return {"error": "auth failed"}, 401, {}
         else :
-            return {"error": "couldn't close position"}, 401, {}
+            return {"error": "couldn't close position"}, 400, {}
 
     return {"status": "sucess"}, 200, {}
 
-# app.run(port=8000)
+@app.route("/get-transactions", methods=["POST"])
+def get_db_transactions_by_month() :
+    auth_header = request.headers.get("Authorization") 
 
+    if auth_header != CURRENT_MASTER_TOKEN  or auth_header == None:
+            return {"error": "auth failed"}, 401, {}
+     
+    data = request.get_json() 
+    
+    year = None
+    month = None
 
-# TODO tests get_orders_by_time
+    try :
+        year = int(data["year"])
+        month = int(data["month"])
 
-get_orders_by_time()
+    except Exception as _:
+        return {"error": "insufficient json body data"}, 400, {}
+    
+    orders = get_orders_by_time(year, month)    
 
+    return {"rows": orders}, 200, {}
 
+# cancel whole transaction
+
+@app.route("/cancel-order", methods=["POST"])
+def cancel_user_orders() :
+    auth_header = request.headers.get("Authorization") 
+
+    if auth_header != CURRENT_MASTER_TOKEN  or auth_header == None:
+            return {"error": "auth failed"}, 401, {}
+     
+    data = request.get_json() 
+        
+    users = None 
+    transaction_id = None 
+
+    try :
+        users = data["users"]
+        transaction_id = data["transaction_id"]
+    except Exception as _:
+        return {"error": "insufficient json body data"}, 400, {}
+    
+    cancelOrderHandle = cancel_orders(users, transaction_id)
+
+    return {"status": cancelOrderHandle}, 200, {}     
+    
+app.run(port=8000)
 

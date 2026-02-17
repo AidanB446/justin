@@ -17,7 +17,7 @@ data = request1.json()
 
 token = data["token"]
 
-url = "http://localhost:8000/get-order-status"
+url = "http://localhost:8000/close-position"
 
 headers = {
         "Authorization": token
@@ -25,7 +25,7 @@ headers = {
 
 requestData = {
         "name": "Aidan", 
-        "transaction_id": "bV8MvKbaQy4YAATX",
+        "symbol": "boogi",
         }
 
 request2 = requests.post(url, json=requestData, headers=headers)

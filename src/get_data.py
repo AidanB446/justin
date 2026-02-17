@@ -22,12 +22,17 @@ def get_latest_price(user, stockSymbols) :
     try :
         client = StockHistoricalDataClient(api_key, api_secret)
     except APIError as e :
-        raised_error = Error(e)        
+        raised_error = Error("alpaca error", e)        
         return raised_error 
 
     request_params = StockLatestTradeRequest(symbol_or_symbols=stockSymbols)
+    
+    latest_trade_data = None
 
-    latest_trade_data = client.get_stock_latest_trade(request_params)
+    try :
+        latest_trade_data = client.get_stock_latest_trade(request_params)
+    except APIError as e :
+        return Error("alpaca error", e)
     
     return_dictionary = {}
 
@@ -52,7 +57,7 @@ def get_order_info(user, order_client_id) :
         trading_client = TradingClient(api_key, api_secret, paper=paper_trading_bool)
 
     except APIError as e:
-        return Error("Trading Client failed to initialize: ", e)
+        return Error("alpaca error", e)
 
     order = trading_client.get_order_by_client_id(order_client_id)
         
@@ -94,7 +99,7 @@ def get_stock_position(user, symbol) :
         trading_client = TradingClient(api_key, api_secret, paper=paper_trading_bool)
 
     except APIError as e:
-        return Error("Trading Client failed to initialize: ", e)
+        return Error("alpaca error", e)
     
 
     symbol_position = None 
@@ -103,7 +108,7 @@ def get_stock_position(user, symbol) :
         symbol_position= trading_client.get_open_position(symbol)
 
     except Exception as e :
-        return Error("couldn't get open position", e)
+        return Error("alpaca error", e)
     
     return_obj = {}
     
@@ -160,7 +165,7 @@ def get_stock_info(symbol) :
     response = requests.get(url, headers=headers)
     
     if response.status_code != 200 :
-        return Error("http request to data.alpaca.markets/ resolved in other than 200")
+        return Error("status code other than 200 on post request")
 
     raw_data = response.json()
 
@@ -190,7 +195,7 @@ def get_buying_power(user) :
         accountData = trading_client.get_account()
 
     except APIError as e:
-        return Error("Trading Client failed to initialize: ", e)
+        return Error("alpaca error", e)
     
     buying_power = None
     cash = None
