@@ -216,7 +216,7 @@ def close_position(user, symbol) :
         close_position_handle = trading_client.close_position(symbol)        
 
     except Exception as e:
-        return Error("Error occured when trying to close position", e)
+        return Error("Couldn't close position", e)
     
     client_order_id= None
     

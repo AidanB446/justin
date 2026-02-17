@@ -26,11 +26,21 @@
 		* place_market_order() - placing a market order -
 		* get_latest_price() - get latest price of stock
 		* place_limit_order() - placing a limit order - 
+	
+- SHIPPING DEMO -
+	- if complications of shipping web app to cli computer arises,
+	we can temporarily host on vps until production from demo continues
 
 - TODO 
 	- create endpoints -
-		- order status - 
-		- get transactions - 	
-		- close_stock_entirely - 
+		- get transactions - return latest transactions from db to user
+				client can choose a time period to get all 
+				transactions from a certain time period.
+
+		- close_stock_entirely - close position wrapper
+			- check for accuracy	
+
+	- alpaca errors should be passed onto the frontend
+	- build frontend out
 
 

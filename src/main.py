@@ -7,7 +7,7 @@ from database_interactions import create_account, delete_account, read_master_ha
 
 from get_data import get_order_info, get_stock_info, get_stock_position
 
-from market_interactions import place_market_order, place_limit_order
+from market_interactions import close_position, place_market_order, place_limit_order
 
 from assests import User, password_auth, create_new_master_token, Error
 
@@ -333,6 +333,47 @@ def get_user_order_status() :
         return {"error": "could not find order"}, 404, {}
 
     return order_data, 200, {}
+
+@app.route("/close-position", methods=["POST"])
+def close_total_stock_position() :
+    
+    auth_header = request.headers.get("Authorization") 
+
+    if auth_header != CURRENT_MASTER_TOKEN  or auth_header == None:
+            return {"error": "auth failed"}, 401, {}
+     
+    data = request.get_json() 
+    
+    username = None
+    symbol = None
+
+    try :
+        username = data["name"]
+        symbol= data["symbol"]
+ 
+    except Exception as _:
+        return {"error": "insufficient json body data"}, 400, {}
+    
+
+    user = User(username)
+    user_init_handle = user.attempt_getdbinfo()
+    
+    if isinstance(user_init_handle, Error) :
+        return {"error": "user not found"}, 401, {}
+    
+    
+    close_position_handle = close_position(user, symbol)
+
+    # future error handling
+    if isinstance(close_position_handle, Error) :
+        error_message = close_position_handle.error_message
+        
+        if error_message == "Trading Client failed to initialize" :
+            return {"error": "auth failed"}, 401, {}
+        else :
+            return {"error": "couldn't close position"}, 401, {}
+
+    return {"status": "sucess"}, 200, {}
 
 app.run(port=8000)
 
