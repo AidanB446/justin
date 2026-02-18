@@ -40,10 +40,13 @@ export default function Home() {
 
 	return (
 		<div>
-			<div>
+			<div className={styles.userDiv}>
+				
+				<a href="/add-user">Add User</a>
+
 				<h2>Registered Accounts</h2>
 						
-				{users.map((obj, ind) => (
+				{users.map((obj, _) => (
 					<User key={obj.api_key} api_key={obj.api_key} api_secret={obj.api_secret} username={obj.name} paper_trading={obj.paper_trading} />
 				))}
 

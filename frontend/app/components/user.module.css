@@ -6,6 +6,8 @@
 }
 
 .container {
-  border-bottom: 1px solid #eee;
-  max-width: 400px;
+  border: 1px solid black;
+  
 }
+
+
