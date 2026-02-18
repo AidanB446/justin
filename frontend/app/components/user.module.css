@@ -1,0 +1,11 @@
+.header {
+  cursor: pointer;
+  list-style-position: inside; 
+  font-weight: bold;
+  padding: 10px 0;
+}
+
+.container {
+  border-bottom: 1px solid #eee;
+  max-width: 400px;
+}

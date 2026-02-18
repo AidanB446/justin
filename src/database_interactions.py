@@ -1,21 +1,39 @@
 
 import sqlite3
 
-from assests import Error, UserOrder
+from assests import UserOrder
 
 db_directory_path = "./db/"
+
+def get_all_users() :
+    conn = sqlite3.connect(db_directory_path + "accounts.db")
+
+    cur = conn.cursor() 
+
+    cur.execute("SELECT * FROM accounts", )
+    
+    users : list[dict] = []
+    userRows = cur.fetchall()
+
+    for row in userRows :
+        userDict = {
+            "api_key" : row[0],
+            "api_secret" : row[1],
+            "name" : row[2],
+            "paper_trading" : row[3],
+        }
+
+        users.append(userDict)
+        
+    return users
+
 
 def insertDBOrder(ordertype, symbol, qty, side, user, client_order_id, transaction_id, date) :
     conn = sqlite3.connect(db_directory_path + "orders.db")
 
     cur = conn.cursor() 
 
-    try :
-        cur.execute("INSERT INTO orders VALUES (?, ?, ?, ?, ?, ?, ?, ?)", [ordertype, symbol, str(qty), side, user, client_order_id, transaction_id, str(date)])
-
-    except Exception as e:
-        return_error = Error("error inserting new order", error=e)         
-        return return_error
+    cur.execute("INSERT INTO orders VALUES (?, ?, ?, ?, ?, ?, ?, ?)", [ordertype, symbol, str(qty), side, user, client_order_id, transaction_id, str(date)])
 
     conn.commit() 
     cur.close()

@@ -3,7 +3,7 @@ import sqlite3
 from flask import Flask, jsonify, request 
 from flask_cors import CORS
 
-from database_interactions import create_account, delete_account, read_master_hash, get_orders_by_time
+from database_interactions import create_account, delete_account, read_master_hash, get_orders_by_time, get_all_users
 
 from get_data import get_order_info, get_stock_info, get_stock_position
 
@@ -411,5 +411,17 @@ def cancel_user_orders() :
 
     return {"status": cancelOrderHandle}, 200, {}     
     
+
+@app.route("/get-all-users", methods=["GET"])
+def get_all_users_endpoint12() :
+    auth_header = request.headers.get("Authorization") 
+
+    if auth_header != CURRENT_MASTER_TOKEN  or auth_header == None:
+            return {"error": "auth failed"}, 401, {}
+     
+    users = get_all_users() 
+
+    return {"users": users}, 200, {}
+
 app.run(port=8000)
 
