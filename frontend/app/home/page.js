@@ -42,7 +42,7 @@ export default function Home() {
 		<div>
 			<div className={styles.userDiv}>
 				
-				<a href="/add-user">Add User</a>
+				<a href="/user-portal">User Portal</a>
 
 				<h2>Registered Accounts</h2>
 						
