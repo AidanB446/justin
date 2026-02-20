@@ -56,25 +56,40 @@ export default function UserPortal() {
 				break;
 
 		}
+		
+	}
+	
+	async function modUser() {
 
 	}
 
 	return (
-		<div>
-			<input type="text" placeholder="Name" id="username" /><br/>	
-			<input type="text" placeholder="Api Key" id="api_key"/><br/>						
-			<input type="text" placeholder="Api Secret" id="api_secret"/><br/>						
-			<label>
-				<input type="checkbox" id="paper_trading" />
-				Paper Trading
-			</label>
-			<br/>		
-			<br/>		
-			<button onClick={createNewUser}>Create User</button>
-			<br/>		
-			<br/>		
-			<p id="debugText" ></p>
+
+		<div className={styles.page}>
+			<div>
+				<h1>Create New User</h1>	
+				<input type="text" placeholder="Name" id="username" /><br/>	
+				<input type="text" placeholder="Api Key" id="api_key"/><br/>						
+				<input type="text" placeholder="Api Secret" id="api_secret"/><br/>						
+				<label>
+					<input type="checkbox" id="paper_trading" />
+					Paper Trading
+				</label>
+				<br/>		
+				<br/>		
+				<button onClick={createNewUser}>Create User</button>
+				<br/>		
+				<br/>		
+				<p id="debugText" ></p>
+			</div>
+			<div>
+				<h1>Modify Existing User</h1>	
+			
+
+
+			</div>
 		</div>
-	);
+
+		);
 }
 

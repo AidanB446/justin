@@ -3,7 +3,7 @@ import sqlite3
 from flask import Flask, jsonify, request 
 from flask_cors import CORS
 
-from database_interactions import create_account, delete_account, read_master_hash, get_orders_by_time, get_all_users
+from database_interactions import check_if_user_exists, create_account, delete_account, read_master_hash, get_orders_by_time, get_all_users
 
 from get_data import get_order_info, get_stock_info, get_stock_position
 
@@ -49,6 +49,8 @@ def usermod(method) :
 
     if not supplied_token == CURRENT_MASTER_TOKEN  or supplied_token == None:
         return {"error": "unauthorized"}, 401, {} 
+   
+    # TODO make sure that a user wont create if the name already exists
 
     match method:
         case "create_account" :
@@ -74,6 +76,9 @@ def usermod(method) :
 
             new_user = User(username, api_key, api_secret, int(paper_trading))
             
+            if check_if_user_exists(new_user.name) :
+                return  ({"error": "username already exists in db"}, 422, {})
+
             create_account(new_user)
 
             return  ({}, 200, {})
@@ -95,6 +100,35 @@ def usermod(method) :
             delete_account(username) 
             
             return  ({}, 200, {})
+        
+        case "modify_account" :
+            data = request.get_json()
+            
+            username = None
+            api_key = None            
+            api_secret = None
+            paper_trading = None 
+
+            try :
+                username = data["name"]
+                api_key = data["api_key"] 
+                api_secret = data["api_key"]
+                paper_trading = data["paper_trading"]
+
+            except KeyError as _ :
+                return  (
+                    {"error": "json body missing key data"}, # body
+                    400, 
+                    {} # headers
+                )
+            
+            delete_account(username)             
+            
+            new_user = User(username, api_key, api_secret, int(paper_trading))
+            create_account(new_user) 
+           
+            return {"status": "success"}, 200, {}
+
 
     return ""
     
@@ -422,6 +456,7 @@ def get_all_users_endpoint12() :
     users = get_all_users() 
 
     return {"users": users}, 200, {}
+
 
 app.run(port=8000)
 

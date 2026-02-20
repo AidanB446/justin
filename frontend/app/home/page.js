@@ -28,11 +28,23 @@ export default function Home() {
 			});
 			
 			const response = await request.json();	
+				
+			switch (request.status) {
+				case 200 : 
+					setUsers(response["users"]);
+					console.log(response["users"]);
+					break;
+			
+				case 401 :
+					alert("Auth no longer valid please sign in again");
+					window.location.href = "/";
+					break;
 
-			if (request.status === 200) {
-				setUsers(response["users"]);
-				console.log(response["users"])
-			} 
+				default :
+					alert("Internal applciation error please contact developer with details on how you encountered this message.")
+			}
+			
+
 		}
 
 		get_users();

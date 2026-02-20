@@ -27,6 +27,19 @@ def get_all_users() :
         
     return users
 
+def check_if_user_exists(username) :
+    conn = sqlite3.connect(db_directory_path + "accounts.db")
+
+    cur = conn.cursor() 
+
+    cur.execute(
+	    "SELECT EXISTS(SELECT 1 FROM accounts WHERE name = ? )",
+	    [username]
+    )
+    
+    response = cur.fetchone()
+    
+    return bool(response[0])
 
 def insertDBOrder(ordertype, symbol, qty, side, user, client_order_id, transaction_id, date) :
     conn = sqlite3.connect(db_directory_path + "orders.db")

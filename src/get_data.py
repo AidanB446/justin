@@ -15,6 +15,8 @@ from alpaca.trading.models import Order, Position
 
 from assests import Error, User
 
+
+
 def get_latest_price(user, stockSymbols) :
     api_key = user.api_key  
     api_secret= user.api_secret
