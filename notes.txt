@@ -31,6 +31,9 @@
 	- if complications of shipping web app to cli computer arises,
 	we can temporarily host on vps until production from demo continues
 
-- TODO 
+- TODO 	
 	- build frontend	
-		continue construction of new user
+		- back button on user portal
+		- delete option on user portal
+
+

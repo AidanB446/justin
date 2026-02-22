@@ -1,12 +1,14 @@
 
 import sqlite3
 
-conn = sqlite3.connect("./master.db")
+conn = sqlite3.connect("./accounts.db")
 
 cur = conn.cursor()
 
 cur.execute("""
-            CREATE TABLE master (username TEXT, hash_password TEXT)
+
+        DELETE FROM accounts 
+
             """)
 
 cur.close()

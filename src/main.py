@@ -79,7 +79,14 @@ def usermod(method) :
             if check_if_user_exists(new_user.name) :
                 return  ({"error": "username already exists in db"}, 422, {})
 
-            create_account(new_user)
+            callHandler = create_account(new_user)
+            
+            if isinstance(callHandler, Error):
+                return  (
+                    {"error": "account already exists"}, # body
+                    409, 
+                    {} # headers
+                )
 
             return  ({}, 200, {})
 
@@ -112,7 +119,7 @@ def usermod(method) :
             try :
                 username = data["name"]
                 api_key = data["api_key"] 
-                api_secret = data["api_key"]
+                api_secret = data["api_secret"]
                 paper_trading = data["paper_trading"]
 
             except KeyError as _ :

@@ -1,7 +1,7 @@
 
 import sqlite3
 
-from assests import UserOrder
+from assests import Error, UserOrder
 
 db_directory_path = "./db/"
 
@@ -54,10 +54,15 @@ def insertDBOrder(ordertype, symbol, qty, side, user, client_order_id, transacti
 
 def create_account(user) :
     
+    nameWhitelist = [""]
+
     name = user.name    
     api_key = user.api_key
     api_secret = user.api_secret
     paper_trading = user.paper_trading
+    
+    if name in nameWhitelist :
+        return Error("Name Already Taken")
 
     conn = sqlite3.connect(db_directory_path + "accounts.db")
 
