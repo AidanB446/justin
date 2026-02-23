@@ -61,7 +61,7 @@ export default function Home() {
 			<div className={styles.userDiv}>
 				<a href="/user-portal">User Portal</a>
 				<h2>Registered Accounts</h2>
-				{usernames.map((obj, ind) => (
+				{users.map((obj, ind) => (
 					<User
 						key={ind}
 						api_key={obj.api_key}
