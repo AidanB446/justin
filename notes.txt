@@ -32,5 +32,10 @@
 	we can temporarily host on vps until production from demo continues
 
 - TODO 	
+	work on placing orders UI
+	
+	right under users should be a section of orders, scrollable last 50 orders.
+
+
 
 
