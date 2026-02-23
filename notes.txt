@@ -32,8 +32,5 @@
 	we can temporarily host on vps until production from demo continues
 
 - TODO 	
-	- build frontend	
-		- back button on user portal
-		- delete option on user portal
 
 

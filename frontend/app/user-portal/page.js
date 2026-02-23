@@ -94,13 +94,7 @@ export default function UserPortal() {
 
 		switch (request.status) {
 			case 200:
-				username.value = "";
-				api_key.value = "";
-				api_secret.value = "";
-				paper_trading.checked = false;
-				document.getElementById("debugText").innerHTML =
-					"User Created Successfully";
-				document.getElementById("debugText").style.color = "blue";
+				window.location.reload();	
 				break;
 
 			case 401:
@@ -163,13 +157,7 @@ export default function UserPortal() {
 
 		switch (request.status) {
 			case 200:
-				username.value = "";
-				api_key.value = "";
-				api_secret.value = "";
-				paper_trading.checked = false;
-				document.getElementById("mod_debugText").innerHTML =
-					"User Modified Successfully";
-				document.getElementById("mod_debugText").style.color = "blue";
+				window.location.reload();
 				break;
 
 			case 401:
@@ -192,55 +180,122 @@ export default function UserPortal() {
 				break;
 		}
 	}
+	
+	async function deleteUser() {
+	
+		const token = sessionStorage.getItem("token");
+
+		if (token === null) {
+			alert("Please sign in again.");
+			window.location.href = "/";
+		}
+
+		const user = document.getElementById("deleteUser-select").value;		
+		
+		const request = await fetch("http://localhost:8000/usermod/delete_account", {
+			method: "POST",
+			headers: {
+				"Authorization": token,
+				"Content-Type": "application/json"
+			},
+			body : JSON.stringify({"name": user})	
+		});
+
+		switch (request.status) {
+			case 200:
+				window.location.reload();
+				break;
+
+			case 400:
+				alert("Please fill out all forms of the field");
+				break;
+			case 401 :
+				alert("Please log in again");
+				window.location.href = "/";
+				break;
+			
+			default:
+				alert(
+					"site error please contact developer with details on encountering this message",
+				);
+				break;
+		}
+
+	}
+	
+	function backButton() {
+		window.location.href="/home";
+	}
 
 	return (
-		<div className={styles.page}>
-			<div className={styles.createNewUser}>
-				<h1>Create New User</h1>
-				<input type="text" placeholder="Name" id="username" />
-				<br />
-				<input type="text" placeholder="Api Key" id="api_key" />
-				<br />
-				<input type="text" placeholder="Api Secret" id="api_secret" />
-				<br />
-				<label>
-					<input type="checkbox" id="paper_trading" />
-					Paper Trading
-				</label>
-				<br />
-				<br />
-				<button onClick={createNewUser}>Create User</button>
-				<br />
-				<br />
-				<p id="debugText"></p>
-			</div>
-			<div className={styles.modifyExistingUser}>
-				<h1>Modify Existing User</h1>
-				<label>Choose a User </label>
-				<select id="user-select" name="user-select">
-					{existingUsers.map((user, ind) => {
-						return (
-							<option key={ind} value={user}>
-								{user}
-							</option>
-						);
-					})}
-				</select>
-				<br />
-				<input type="text" placeholder="Api Key" id="mod_api_key" />
-				<br />
-				<input type="text" placeholder="Api Secret" id="mod_api_secret" />
-				<br />
-				<label>
-					<input type="checkbox" id="mod_paper_trading" />
-					Paper Trading
-				</label>
-				<br />
-				<br />
-				<button onClick={modifyUser}>Modify User</button>
-				<br />
-				<br />
-				<p id="mod_debugText"></p>
+		
+		<div>
+			<button onClick={backButton} className={styles.backButton}>Back</button>	
+			<br/>
+			<br/>
+			<br/>
+			<div className={styles.page}>
+				<div className={styles.createNewUser}>
+					<h1>Create New User</h1>
+					<input type="text" placeholder="Name" id="username" />
+					<br />
+					<input type="text" placeholder="Api Key" id="api_key" />
+					<br />
+					<input type="text" placeholder="Api Secret" id="api_secret" />
+					<br />
+					<label>
+						<input type="checkbox" id="paper_trading" />
+						Paper Trading
+					</label>
+					<br />
+					<br />
+					<button onClick={createNewUser}>Create User</button>
+					<br />
+					<br />
+					<p id="debugText"></p>
+
+					<h1>Delete User</h1>
+					<label>Choose a User </label>
+					<select id="deleteUser-select" name="delete-user-select">
+						{existingUsers.map((user, ind) => {
+							return (
+								<option key={ind} value={user}>
+									{user}
+								</option>
+							);
+						})}
+					</select>
+					<br/>
+					<button onClick={deleteUser}>Delete User</button>
+				</div>
+				<div className={styles.modifyExistingUser}>
+					<h1>Modify Existing User</h1>
+					<label>Choose a User </label>
+					<select id="user-select" name="user-select">
+						{existingUsers.map((user, ind) => {
+							return (
+								<option key={ind} value={user}>
+									{user}
+								</option>
+							);
+						})}
+					</select>
+					<br />
+					<input type="text" placeholder="Api Key" id="mod_api_key" />
+					<br />
+					<input type="text" placeholder="Api Secret" id="mod_api_secret" />
+					<br />
+					<label>
+						<input type="checkbox" id="mod_paper_trading" />
+						Paper Trading
+					</label>
+					<br />
+					<br />
+					<button onClick={modifyUser}>Modify User</button>
+					<br />
+					<br />
+					<p id="mod_debugText"></p>
+				</div>
 			</div>
 		</div>
 	);
