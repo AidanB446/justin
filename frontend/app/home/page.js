@@ -102,7 +102,11 @@ export default function Home() {
 		);
 
 		const response = await request.json();
-		console.log(response);
+		document.getElementById("MarketOrderDebug").innerHTML = JSON.stringify(response);
+
+		for (const inp of inputs) {
+			inp.value = "";
+		}
 	}
 
 	async function placeLimitOrder() {
@@ -127,7 +131,12 @@ export default function Home() {
 		);
 
 		const response = await request.json();
-		console.log(response);
+
+		document.getElementById("LimitOrderDebug").innerHTML = JSON.stringify(response);
+
+		for (const inp of inputs) {
+			inp.value = "";
+		}
 	}
 
 	return (
@@ -185,6 +194,7 @@ export default function Home() {
 					<button onClick={placeMarketOrder}>
 						Place Market Order
 					</button>
+					<p style={{"color": "red"}} id="MarketOrderDebug"></p>
 				</div>
 
 				<div id="LimitOrderDiv" className={styles.placeLimitOrder}>
@@ -214,6 +224,7 @@ export default function Home() {
 					/>
 					<br />
 					<button onClick={placeLimitOrder}>Place Limit Order</button>
+					<p style={{"color": "red"}} id="LimitOrderDebug"></p>
 				</div>
 			</div>
 		</div>
