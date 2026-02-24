@@ -33,9 +33,6 @@
 
 - TODO 	
 	- work on placing orders UI
-		- * input to place a market order	
-		- * left on grab selected users function home file
-		- input to place a limit order
 		- input to place all ordahhhssss
 	- right under users should be a section of orders, scrollable last 50 orders
 		- make this a big scroll div too, dont scale the entire page. 	

@@ -61,21 +61,35 @@ export default function Home() {
 	}, []);
 	
 	function grabSelectedUsers() {
+		const parentElement = document.getElementById("userSelect");
+		const labels = parentElement.children;	
 		
+		let returnList = [];
+
+		for (const label of labels) {
+			const inputElement = label.querySelector("input");
+
+			if (inputElement.checked) {
+				let id = inputElement.id;
+				id = id.split("_")[1];	
+				returnList.push(id);
+			}
+		}
+		
+		return returnList;
 	}
 	
-	async function placeOrder() {
-		
-		const users = grabSelectedUsers(); // list of usernames
+	async function placeLimitOrder() {
+		const users = grabSelectedUsers(); 
 		const stockSymbol = document.getElementById("stockSymbol");
 		const stockQty = document.getElementById("stockQty");
 		const stockChoice = document.getElementById("stockChoice");
 
 		const bodyData = {
 			users: users,
-			symbol: document.getElementById("stockSymbol").value,
-			qty: document.getElementById("stockQty").value,
-			side: document.getElementById("stockChoice").value,
+			symbol: stockSymbol.value,
+			qty: stockQty.value,
+			side: stockChoice.value,
 		};
 
 		const request = await fetch(
@@ -145,7 +159,7 @@ export default function Home() {
 					/>
 					<br />
 				</div>
-				<button>Place Limit Order</button>
+				<button onClick={placeLimitOrder}>Place Limit Order</button>
 			</div>
 		</div>
 	);
