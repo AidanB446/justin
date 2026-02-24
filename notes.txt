@@ -28,17 +28,25 @@
 		* place_limit_order() - placing a limit order - 
 	
 - SHIPPING DEMO -
-	- if complications of shipping web app to cli computer arises,
-	we can temporarily host on vps until production from demo continues
+	
+	- COME UP -
+		come up with plan to run this full application locally on the clients machine.
 
 - TODO 	
-	- work on placing orders UI
-		- input to place all ordahhhssss
 	- right under users should be a section of orders, scrollable last 50 orders
 		- make this a big scroll div too, dont scale the entire page. 	
 		- You should be able to click a dropdown on the ordah title and below 
 		comes a menu to cancel the ordah 
-
-	- make sure all boxes on the page fit in 1 to 1.5 full viewlengths
 	
+	- make close position iterative, and add it to the market functions section endpoint 
+
+	- USER PORTAL - 
+		- going to require iterative user component.	
+		- dropdown element for each user, where you can get specific information about that user
+			- specific information being
+				- get stock position
+				- 
+
+	- in the user portal should be expansive list of further user functions	
+
 
