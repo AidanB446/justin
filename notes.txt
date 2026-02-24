@@ -33,7 +33,16 @@
 
 - TODO 	
 	- work on placing orders UI
+		- * input to place a market order	
+		- * left on grab selected users function home file
+		- input to place a limit order
+		- input to place all ordahhhssss
 	- right under users should be a section of orders, scrollable last 50 orders
+		- make this a big scroll div too, dont scale the entire page. 	
+		- You should be able to click a dropdown on the ordah title and below 
+		comes a menu to cancel the ordah 
 
+	- make sure all boxes on the page fit in 1 to 1.5 full viewlengths
+	
 
 
