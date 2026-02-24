@@ -141,7 +141,6 @@ def usermod(method) :
     
 @app.route("/place_iterative_market_order", methods=["POST"])
 def place_iterative_market_order() :
- 
     # auth logic here
     supplied_token = request.headers.get("Authorization") 
 
@@ -202,7 +201,6 @@ def place_iterative_limit_order() :
 
     if not supplied_token == CURRENT_MASTER_TOKEN or supplied_token == None:
         return {"error": "unauthorized"}, 401, {} 
-
 
     data = request.get_json()
     users = None # list of users names

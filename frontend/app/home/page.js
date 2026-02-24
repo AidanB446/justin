@@ -4,12 +4,11 @@ import { useEffect, useState } from "react";
 import styles from "./page.module.css";
 
 import User from "../components/user";
-import {doc} from "prettier";
 
 export default function Home() {
 	const [users, setUsers] = useState([]);
 	const [usernames, setUsernames] = useState([]);
-		
+
 	const [token, setToken] = useState("");
 
 	useEffect(() => {
@@ -18,7 +17,7 @@ export default function Home() {
 		if (token === null) {
 			window.location.href = "/";
 		}
-		
+
 		setToken("token");
 
 		async function get_users() {
@@ -59,11 +58,11 @@ export default function Home() {
 
 		get_users();
 	}, []);
-	
+
 	function grabSelectedUsers() {
 		const parentElement = document.getElementById("userSelect");
-		const labels = parentElement.children;	
-		
+		const labels = parentElement.children;
+
 		let returnList = [];
 
 		for (const label of labels) {
@@ -71,33 +70,57 @@ export default function Home() {
 
 			if (inputElement.checked) {
 				let id = inputElement.id;
-				id = id.split("_")[1];	
+				id = id.split("_")[1];
 				returnList.push(id);
 			}
 		}
-		
+
 		return returnList;
 	}
-	
-	async function placeLimitOrder() {
-		const users = grabSelectedUsers(); 
-		const stockSymbol = document.getElementById("stockSymbol");
-		const stockQty = document.getElementById("stockQty");
-		const stockChoice = document.getElementById("stockChoice");
 
-		const bodyData = {
-			users: users,
-			symbol: stockSymbol.value,
-			qty: stockQty.value,
-			side: stockChoice.value,
-		};
+	async function placeMarketOrder() {
+		const inputs = document.querySelectorAll("#MarketOrderDiv> input");
+	
+		let bodyData = {};
+
+		bodyData["users"] = grabSelectedUsers();
+
+		for (const inp of inputs) {
+			bodyData[inp.name] = inp.value;
+		}
 
 		const request = await fetch(
 			"http://localhost:8000/place_iterative_market_order",
 			{
 				method: "POST",
 				headers: {
-					Authorization: token,
+					"Authorization": token,
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(bodyData),
+			},
+		);
+
+		const response = await request.json();
+		console.log(response);
+	}
+
+	async function placeLimitOrder() {
+		const inputs = document.querySelectorAll("#LimitOrderDiv > input");
+		let bodyData = {};
+		bodyData["users"] = grabSelectedUsers();
+
+		for (const inp of inputs) {
+			bodyData[inp.name] = inp.value;
+		}
+
+		const request = await fetch(
+			"http://localhost:8000/place_iterative_market_order",
+			{
+				method: "POST",
+				headers: {
+					"Authorization": token,
+					"Content-Type": "application/json",
 				},
 				body: JSON.stringify(bodyData),
 			},
@@ -134,32 +157,64 @@ export default function Home() {
 								id={"usernameboxselect_" + name}
 							/>
 							{name}
-							<br/>
+							<br />
 						</label>
 					))}
 				</div>
-				<div className={styles.mainParent}>
+
+				<div id="MarketOrderDiv" className={styles.placeMarketOrderDiv}>
 					<h3>Place iterative Market Order</h3>
 					<input
 						type="text"
 						placeholder="Enter Stock Symbol"
-						id="stockSymbol"
+						name="symbol"	
 					/>
 					<br />
 					<input
 						type="text"
 						placeholder="Enter Stock Qty"
-						id="stockQty"
+						name="qty"
 					/>
 					<br />
 					<input
 						type="text"
 						placeholder="Enter Side Choice (buy or sell)"
-						id="stockChoice"
+						name="side"
 					/>
 					<br />
+					<button onClick={placeMarketOrder}>
+						Place Market Order
+					</button>
 				</div>
-				<button onClick={placeLimitOrder}>Place Limit Order</button>
+
+				<div id="LimitOrderDiv" className={styles.placeLimitOrder}>
+					<h3>Place iterative Limit Order</h3>
+					<input
+						type="text"
+						placeholder="Enter Stock Symbol"
+						name="symbol"
+					/>
+					<br />
+					<input
+						type="text"
+						placeholder="Enter Stock Qty"
+						name="qty"
+					/>
+					<br />
+					<input
+						type="text"
+						placeholder="Enter Side Choice (buy or sell)"
+						name="side"
+					/>
+					<br />
+					<input
+						type="text"
+						placeholder="Enter Limit Price"
+						name="limit"
+					/>
+					<br />
+					<button onClick={placeLimitOrder}>Place Limit Order</button>
+				</div>
 			</div>
 		</div>
 	);
