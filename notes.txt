@@ -41,11 +41,7 @@
 	- make close position iterative, and add it to the market functions section endpoint 
 
 	- USER PORTAL - 
-		- dropdown element for each user, where you can get specific information about that user
-			- specific information being
-				- get stock position
-				- 
-
-	- in the user portal should be expansive list of further user based functions	
+		- close position interface
+		- make users iterable table scrollable	
 
 
