@@ -1,5 +1,11 @@
 .page {
 	display: flex;
+	flex-direction: column;
+	gap: 25px;
+}
+
+.mainContent {
+	display: flex;
 	justify-content: space-evenly;
 }
 
@@ -16,9 +22,26 @@
 	border-radius: 3px;
 	width: fit-content;
 	padding: 10px;
-		
 	height: 100px;
 	overflow-y: scroll;	
 }
+
+.orderManager {
+	width: 66%;
+	padding: 10px;
+	border: 2px black solid;
+	padding: 10px;
+	
+}
+
+.getOrders {
+	display: flex;
+	justify-content: space-around;
+	gap: 10%;
+	border-bottom: 2px solid black;
+	padding: 10px;
+
+}
+
 
 

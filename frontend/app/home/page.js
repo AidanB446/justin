@@ -3,13 +3,14 @@
 import { useEffect, useState } from "react";
 import styles from "./page.module.css";
 
-import User from "../components/user";
+import Order from "../components/order";
 
 export default function Home() {
 	const [users, setUsers] = useState([]);
 	const [usernames, setUsernames] = useState([]);
-
 	const [token, setToken] = useState("");
+
+	const [retrievedOrders, setRetrievedOrders] = useState([]);
 
 	useEffect(() => {
 		const token = sessionStorage.getItem("token");
@@ -56,7 +57,10 @@ export default function Home() {
 			}
 		}
 
+		async function getOrders() {}
+
 		get_users();
+		getOrders();
 	}, []);
 
 	function grabSelectedUsers() {
@@ -80,7 +84,7 @@ export default function Home() {
 
 	async function placeMarketOrder() {
 		const inputs = document.querySelectorAll("#MarketOrderDiv> input");
-	
+
 		let bodyData = {};
 
 		bodyData["users"] = grabSelectedUsers();
@@ -94,7 +98,7 @@ export default function Home() {
 			{
 				method: "POST",
 				headers: {
-					"Authorization": token,
+					Authorization: token,
 					"Content-Type": "application/json",
 				},
 				body: JSON.stringify(bodyData),
@@ -102,7 +106,8 @@ export default function Home() {
 		);
 
 		const response = await request.json();
-		document.getElementById("MarketOrderDebug").innerHTML = JSON.stringify(response);
+		document.getElementById("MarketOrderDebug").innerHTML =
+			JSON.stringify(response);
 
 		for (const inp of inputs) {
 			inp.value = "";
@@ -123,7 +128,7 @@ export default function Home() {
 			{
 				method: "POST",
 				headers: {
-					"Authorization": token,
+					Authorization: token,
 					"Content-Type": "application/json",
 				},
 				body: JSON.stringify(bodyData),
@@ -132,11 +137,60 @@ export default function Home() {
 
 		const response = await request.json();
 
-		document.getElementById("LimitOrderDebug").innerHTML = JSON.stringify(response);
+		document.getElementById("LimitOrderDebug").innerHTML =
+			JSON.stringify(response);
 
 		for (const inp of inputs) {
 			inp.value = "";
 		}
+	}
+
+	async function getOrders() {
+		const usertoken = sessionStorage.getItem("token");
+
+		if (usertoken === null) {
+			window.location.href = "/";
+		}
+
+		const month = document.getElementById("select_month").value;
+		const year = document.getElementById("select_year").value;
+
+		if (month === "" || year === "") {
+			alert("Please select a month, and year");
+			return;
+		}
+
+		const getOrdersRequest = await fetch(
+			"http://localhost:8000/get-transactions",
+			{
+				method: "POST",
+				headers: {
+					Authorization: usertoken,
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ year: year, month: month }),
+			},
+		);
+
+		switch (getOrdersRequest.status) {
+			case 400:
+				alert(
+					"Bad or no data given, please fill out the input boxes. (only numbers)",
+				);
+				return;
+
+			case 401:
+				alert("Auth failed, please login again.");
+				window.location.href = "/";
+				return;
+
+			default:
+				break;
+		}
+
+		const orders = await getOrdersRequest.json();
+		setRetrievedOrders(orders["rows"]);
+		console.log(orders);	
 	}
 
 	return (
@@ -144,77 +198,116 @@ export default function Home() {
 			<div className={styles.userDiv}>
 				<a href="/user-portal">User Portal</a>
 			</div>
-			<div className={styles.ordersDiv}>
-				<h1>Place Orders</h1>
-
-				<h3>Select Affected Users</h3>
-				<div id="userSelect" className={styles.selectUsersDiv}>
-					{usernames.map((name, index) => (
-						<label key={index}>
-							<input
-								type="checkbox"
-								id={"usernameboxselect_" + name}
-							/>
-							{name}
-							<br />
-						</label>
-					))}
+			<div className={styles.mainContent}>
+				<div className={styles.orderManager}>
+					<div className={styles.getOrders}>
+						<input
+							id="select_year"
+							placeholder="Enter Year of Order"
+						/>
+						<select id="select_month">
+							<option value="">Month</option>
+							<option value="01">01</option>
+							<option value="02">02</option>
+							<option value="03">03</option>
+							<option value="04">04</option>
+							<option value="05">05</option>
+							<option value="06">06</option>
+							<option value="07">07</option>
+							<option value="08">08</option>
+							<option value="09">09</option>
+							<option value="09">09</option>
+							<option value="10">10</option>
+							<option value="11">11</option>
+							<option value="12">12</option>
+						</select>
+						<button onClick={getOrders}>Get Orders</button>
+					</div>
+					{retrievedOrders.map((orderArr, ind) => {
+						return (
+							<span key={ind}>
+								<Order pipe={orderArr} />
+							</span>
+						);
+					})}
 				</div>
+				<div className={styles.ordersDiv}>
+					<h1>Place Orders</h1>
 
-				<div id="MarketOrderDiv" className={styles.placeMarketOrderDiv}>
-					<h3>Place iterative Market Order</h3>
-					<input
-						type="text"
-						placeholder="Enter Stock Symbol"
-						name="symbol"	
-					/>
-					<br />
-					<input
-						type="text"
-						placeholder="Enter Stock Qty"
-						name="qty"
-					/>
-					<br />
-					<input
-						type="text"
-						placeholder="Enter Side Choice (buy or sell)"
-						name="side"
-					/>
-					<br />
-					<button onClick={placeMarketOrder}>
-						Place Market Order
-					</button>
-					<p style={{"color": "red"}} id="MarketOrderDebug"></p>
-				</div>
+					<h3>Select Affected Users</h3>
+					<div id="userSelect" className={styles.selectUsersDiv}>
+						{usernames.map((name, index) => (
+							<label key={index}>
+								<input
+									type="checkbox"
+									id={"usernameboxselect_" + name}
+								/>
+								{name}
+								<br />
+							</label>
+						))}
+					</div>
 
-				<div id="LimitOrderDiv" className={styles.placeLimitOrder}>
-					<h3>Place iterative Limit Order</h3>
-					<input
-						type="text"
-						placeholder="Enter Stock Symbol"
-						name="symbol"
-					/>
-					<br />
-					<input
-						type="text"
-						placeholder="Enter Stock Qty"
-						name="qty"
-					/>
-					<br />
-					<input
-						type="text"
-						placeholder="Enter Side Choice (buy or sell)"
-						name="side"
-					/>
-					<br />
-					<input
-						type="text"
-						placeholder="Enter Limit Price"
-						name="limit"
-					/>
-					<br />
-					<button onClick={placeLimitOrder}>Place Limit Order</button>
-					<p style={{"color": "red"}} id="LimitOrderDebug"></p>
+					<div
+						id="MarketOrderDiv"
+						className={styles.placeMarketOrderDiv}
+					>
+						<h3>Place iterative Market Order</h3>
+						<input
+							type="text"
+							placeholder="Enter Stock Symbol"
+							name="symbol"
+						/>
+						<br />
+						<input
+							type="text"
+							placeholder="Enter Stock Qty"
+							name="qty"
+						/>
+						<br />
+						<input
+							type="text"
+							placeholder="Enter Side Choice (buy or sell)"
+							name="side"
+						/>
+						<br />
+						<button onClick={placeMarketOrder}>
+							Place Market Order
+						</button>
+						<p style={{ color: "red" }} id="MarketOrderDebug"></p>
+					</div>
+
+					<div id="LimitOrderDiv" className={styles.placeLimitOrder}>
+						<h3>Place iterative Limit Order</h3>
+						<input
+							type="text"
+							placeholder="Enter Stock Symbol"
+							name="symbol"
+						/>
+						<br />
+						<input
+							type="text"
+							placeholder="Enter Stock Qty"
+							name="qty"
+						/>
+						<br />
+						<input
+							type="text"
+							placeholder="Enter Side Choice (buy or sell)"
+							name="side"
+						/>
+						<br />
+						<input
+							type="text"
+							placeholder="Enter Limit Price"
+							name="limit"
+						/>
+						<br />
+						<button onClick={placeLimitOrder}>
+							Place Limit Order
+						</button>
+						<p style={{ color: "red" }} id="LimitOrderDebug"></p>
+					</div>
 				</div>
 			</div>
 		</div>
