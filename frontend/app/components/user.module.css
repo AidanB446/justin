@@ -1,13 +1,21 @@
 .header {
-  cursor: pointer;
-  list-style-position: inside; 
-  font-weight: bold;
-  padding: 10px 0;
+	cursor: pointer;
+	list-style-position: inside;
+	font-weight: bold;
+	padding: 10px 0;
 }
 
 .container {
-  border: 1px solid black;
-  padding: 10px;
+	border: 1px solid black;
+	padding: 10px;
+}
+
+.getStockPosition {
+	
+	
+
+
+
 }
 
 

@@ -65,7 +65,10 @@ export default function User(props) {
 			case 200 :
 				window.location.reload()
 
-
+			case 401 :
+				alert("Auth is no longer valid, please login");
+				window.location.href = "/";
+			
 			default :
 				break;
 			
@@ -74,20 +77,14 @@ export default function User(props) {
 	}
 	
 	async function deleteUser() {
-		const token = sessionStorage.getItem("token");
-
-		if (token === null) {
-			alert("Please sign in again.");
-			window.location.href = "/";
-		}
 		
 		const request = await fetch("http://localhost:8000/usermod/delete_account", {
 			method: "POST",
 			headers: {
-				"Authorization": token,
+				"Authorization": props.token,
 				"Content-Type": "application/json"
 			},
-			body : JSON.stringify({"name": props.username})	
+			body : JSON.stringify({"name": props.token})	
 		});
 
 		switch (request.status) {
@@ -111,6 +108,38 @@ export default function User(props) {
 		}
 
 	}
+	
+	async function getStockPos() {
+			
+		const symbol = document.getElementById("stockSymbol").value;
+		
+		const request = await fetch("http://localhost:8000/get-stock-position", {
+			method: "POST",
+			headers: {
+				"Authorization": props.token,
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify({"name": props.username, "symbol": symbol})
+		})
+		
+		switch (request.status) {
+			case 401:
+				alert("Please login again");
+				window.location.href = "/";
+				return;
+
+			case 400:
+				alert("Error retrieving stock position, please confirm you user keys, make sure all forms and filled correctly and try again.");
+				return;	
+			
+			default: 
+				break;
+		}
+
+		const response = await request.json();
+	
+		document.getElementById("positionData").innerHTML = JSON.stringify(response);	
+	}
 
 	if (toggle) {
 		return (
@@ -122,6 +151,14 @@ export default function User(props) {
 					<p>paper trading: {props.paper_trading}</p>
 					<button onClick={toggleSwitch}>Edit Values</button>	
 					<button onClick={deleteUser}>Delete User</button>	
+					<br/>
+					<br/>
+					<div className={styles.getStockPosition}>
+						<h3>Get Stock Position</h3>
+						<input id="stockSymbol" type="text" placeholder="Enter Stock Symbol"/>			
+						<button onClick={getStockPos} >Get Position</button><br/><br/>
+						<p id="positionData"></p>
+					</div>	
 				</div>
 			</details>
 		);

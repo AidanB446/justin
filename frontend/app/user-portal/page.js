@@ -124,6 +124,10 @@ export default function UserPortal() {
 	function backButton() {
 		window.location.href = "/home";
 	}
+	
+	function debug() {
+		console.log(token);
+	}
 
 	return (
 		<div>
@@ -131,6 +135,9 @@ export default function UserPortal() {
 				Back
 			</button>
 			<br />
+			<button onClick={debug}>
+				Debug
+			</button>	
 			<br />
 			<br />
 			<div className={styles.page}>
