@@ -60,8 +60,13 @@ def get_order_info(user, order_client_id) :
 
     except APIError as e:
         return Error("alpaca error", e)
+        
+    order = None
 
-    order = trading_client.get_order_by_client_id(order_client_id)
+    try :
+        order = trading_client.get_order_by_client_id(order_client_id)
+    except Exception as e: 
+        return Error("alpaca error", e)
         
     order_data = {}
 

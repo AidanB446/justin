@@ -10,7 +10,7 @@ export default function Home() {
 	const [usernames, setUsernames] = useState([]);
 	const [token, setToken] = useState("");
 
-	const [retrievedOrders, setRetrievedOrders] = useState([]);
+	const [retrievedOrders, setRetrievedOrders] = useState(["Please complete the fields above, and press the Get Orders button to retrieve previous transactions."]);
 
 	useEffect(() => {
 		const token = sessionStorage.getItem("token");
@@ -190,7 +190,7 @@ export default function Home() {
 
 		const orders = await getOrdersRequest.json();
 		setRetrievedOrders(orders["rows"]);
-		console.log(orders);	
+		console.log(orders);
 	}
 
 	return (
@@ -226,7 +226,7 @@ export default function Home() {
 					{retrievedOrders.map((orderArr, ind) => {
 						return (
 							<span key={ind}>
-								<Order pipe={orderArr} />
+								<Order transaction_id={orderArr[6] || null} name={orderArr[4] || null} pipe={orderArr} />
 							</span>
 						);
 					})}

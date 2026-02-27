@@ -358,7 +358,7 @@ def get_user_order_status() :
     order_data = get_order_info(user, client_order_id)
    
     if isinstance(order_data, Error) :
-        return {"error": "could not find order"}, 404, {}
+        return {"error": "Please check user credentials and make sure order is still active. Check on alpaca dashboard"}, 422, {}
 
     return order_data, 200, {}
 
