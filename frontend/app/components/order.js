@@ -1,11 +1,12 @@
 "use client";
 
-import {doc} from "prettier";
+import { doc } from "prettier";
 import styles from "./order.module.css";
 
 export default function Order(props) {
 	// implement get order status - in progress
 	// implement cancel order
+	// cancel order needs to be iterative on server side.
 
 	if (typeof props.pipe === "string") {
 		return <div className={styles.order}>{props.pipe}</div>;
@@ -41,15 +42,16 @@ export default function Order(props) {
 		switch (request.status) {
 			case 200:
 				data = await request.json();
-				document.getElementById("status_output").innerHTML = JSON.stringify(data);		
+				document.getElementById("status_output").innerHTML =
+					JSON.stringify(data);
 				break;
 
 			case 401:
 				alert("Please login again");
 				window.location.href = "/";
 				return;
-			
-			case 422 :
+
+			case 422:
 				data = await request.json();
 				alert(data["error"]);
 				break;
@@ -57,7 +59,9 @@ export default function Order(props) {
 			default:
 				data = await request.json();
 				alert(data["error"]);
-				alert("Please contact developer with details about getting this message.")	
+				alert(
+					"Please contact developer with details about getting this message.",
+				);
 				break;
 		}
 	}
