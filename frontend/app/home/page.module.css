@@ -6,23 +6,22 @@
 
 .links {
 	display: flex;
-	flex-direction: row;	
+	flex-direction: row;
 	gap: 20px;
 }
 
 .mainContent {
 	display: flex;
 	justify-content: space-evenly;
-
 	height: fit-content;
 }
 
-.userDiv,
+.linkDiv,
 .ordersDiv {
 	border: 2px black solid;
+	border-radius: 5px;
 	width: fit-content;
 	padding: 10px;
-
 	height: fit-content;
 }
 
@@ -44,10 +43,12 @@
 }
 
 .stockManager {
-	width: 66%;
+	width: 30%;
 	padding: 10px;
 	border: 2px black solid;
 	padding: 10px;
 	overflow-y: scroll;
-} 
+}
+
+ 
 

@@ -242,17 +242,31 @@ export default function Home() {
 	return (
 		<div className={styles.page}>
 			<div className={styles.links}>
-				<span className={styles.userDiv}>
+				<span className={styles.linkDiv}>
 					<a href="/user-portal">User Portal</a>
 				</span>
-				<span className={styles.userDiv}>
+				<span className={styles.linkDiv}>
 					<a href="/orders">Orders</a>
 				</span>
 			</div>
 			<div className={styles.mainContent}>
 				<div className={styles.stockManager}>
-					<h1>Stock Search</h1>		
-
+					<h1>Stock Search</h1>
+					<br />
+					<h3>Get Stock Info</h3>
+					<span style={{display: "flex", flexDirection: "row", gap: "25px"}}>
+						<span className={styles.getStockInput}>
+							<input
+								type="text"
+								placeholder="Enter Stock Symbol"
+							/>
+							<br />
+							<button>Get Stock Info</button>
+						</span>
+						<span className={styles.output}>
+							<p id="StockDataOutput"></p>
+						</span>
+					</span>
 				</div>
 				<div className={styles.ordersDiv}>
 					<h1>Place Orders</h1>

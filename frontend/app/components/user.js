@@ -41,6 +41,7 @@ export default function User(props) {
 		console.log(bodyData);
 
 		const url = "http://localhost:8000/usermod/modify_account";		
+		console.log(props.token)	
 		const request = await fetch(url, {
 			method: "POST",
 			headers : {
@@ -61,9 +62,10 @@ export default function User(props) {
 				}
 				alert("Please fill out all fields");
 				break;
-
-			case 200 :
-				window.location.reload()
+			
+			case 200:
+				window.location.reload();	
+				break;
 
 			case 401 :
 				alert("Auth is no longer valid, please login");
@@ -84,12 +86,12 @@ export default function User(props) {
 				"Authorization": props.token,
 				"Content-Type": "application/json"
 			},
-			body : JSON.stringify({"name": props.token})	
+			body : JSON.stringify({"name": props.username})	
 		});
 
 		switch (request.status) {
 			case 200:
-				window.location.reload();
+				window.location.reload();	
 				break;
 
 			case 400:
@@ -110,7 +112,8 @@ export default function User(props) {
 	}
 	
 	async function getStockPos() {
-			
+		// returning 400
+
 		const symbol = document.getElementById("stockSymbol").value;
 		
 		const request = await fetch("http://localhost:8000/get-stock-position", {
@@ -129,6 +132,8 @@ export default function User(props) {
 				return;
 
 			case 400:
+				const data = await request.json();
+				console.log(data["error"]);
 				alert("Error retrieving stock position, please confirm you user keys, make sure all forms and filled correctly and try again.");
 				return;	
 			
@@ -169,8 +174,14 @@ export default function User(props) {
 
 				<summary className={styles.header}>{props.username}</summary>
 				<div id="editDiv" className={styles.content}>
-					<input name="api_key" placeholder="Enter Api Key" /><br/>
-					<input name="api_secret" placeholder="Enter Api Secret" /><br/>
+					
+					<h3>Old Data</h3>	
+					<span>Previous API_KEY: {props.api_key}</span><br/>
+					<span>Previous API_SECRET: {props.api_secret}</span>
+					<br/>	
+					<br/>	
+					<input name="api_key" placeholder="Enter New Api Key" /><br/>
+					<input name="api_secret" placeholder="Enter New Api Secret" /><br/>
 					<label>
 						Paper Trading 
 					</label>

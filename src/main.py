@@ -106,7 +106,7 @@ def usermod(method) :
 
             delete_account(username) 
             
-            return  ({}, 200, {})
+            return  ({"flag": "returned_in case delete_account"}, 200, {})
         
         case "modify_account" :
             data = request.get_json()
@@ -300,8 +300,18 @@ def get_pos() :
     
     if isinstance(position_data, Error) :
         
+        # handle for Position is not a value
+
         print(position_data.error_message)
         print(position_data.error)
+        
+        errorValue = position_data.error
+        
+        if errorValue is None :
+            pass
+        else :
+            if errorValue.code == 40410000 :
+                return {"status": "Position Does Not Exist"}, 200, {}
 
         return {"error": "couldn't get position"}, 400, {}
 
@@ -461,7 +471,6 @@ def get_all_users_endpoint12() :
     users = get_all_users() 
 
     return {"users": users}, 200, {}
-
 
 app.run(port=8000)
 

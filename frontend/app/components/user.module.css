@@ -6,16 +6,22 @@
 }
 
 .container {
+	border-bottom: 1px solid black;
+	border-top: 1px solid black;
+	padding: 10px;
+	
+	padding-left: 25px;
+	padding-bottom: 25px;
+
+}
+
+.content {
 	border: 1px solid black;
 	padding: 10px;
+
+	width: fit-content;
 }
 
-.getStockPosition {
-	
-	
 
-
-
-}
 
 

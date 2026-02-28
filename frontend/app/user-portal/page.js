@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 
 export default function UserPortal() {
 	const [users, setUsers] = useState([]);
-	const [token, setToken] = useState("");	
+	const [token, setToken] = useState("");
 
 	useEffect(() => {
 		const sesstoken = sessionStorage.getItem("token");
@@ -15,9 +15,8 @@ export default function UserPortal() {
 			alert("Please sign in again.");
 			window.location.href = "/";
 		}
-		
-		setToken(sesstoken)
 
+		setToken(sesstoken);
 
 		async function loadUsers() {
 			try {
@@ -50,7 +49,6 @@ export default function UserPortal() {
 						);
 						break;
 				}
-
 			} catch (err) {
 				console.error("Error loading users:", err);
 			}
@@ -124,10 +122,6 @@ export default function UserPortal() {
 	function backButton() {
 		window.location.href = "/home";
 	}
-	
-	function debug() {
-		console.log(token);
-	}
 
 	return (
 		<div>
@@ -135,9 +129,6 @@ export default function UserPortal() {
 				Back
 			</button>
 			<br />
-			<button onClick={debug}>
-				Debug
-			</button>	
 			<br />
 			<br />
 			<div className={styles.page}>
@@ -150,7 +141,7 @@ export default function UserPortal() {
 							<User
 								key={ind}
 								username={userobj.name}
-								token={token}	
+								token={token}
 								api_key={userobj.api_key}
 								api_secret={userobj.api_secret}
 								paper_trading={String(
