@@ -46,7 +46,7 @@
 
 
 	- add order functions to the order Manager
-
+	- create cancel order box inside the Place Orders menu in home page
 
 
 

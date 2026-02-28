@@ -4,13 +4,17 @@ import { useEffect, useState } from "react";
 import styles from "./page.module.css";
 
 import Order from "../components/order";
+import {doc} from "prettier";
+import {DEFAULT_SERIF_FONT} from "next/dist/shared/lib/constants";
 
 export default function Home() {
 	const [users, setUsers] = useState([]);
 	const [usernames, setUsernames] = useState([]);
 	const [token, setToken] = useState("");
 
-	const [retrievedOrders, setRetrievedOrders] = useState(["Please complete the fields above, and press the Get Orders button to retrieve previous transactions."]);
+	const [retrievedOrders, setRetrievedOrders] = useState([
+		"Please complete the fields above, and press the Get Orders button to retrieve previous transactions.",
+	]);
 
 	useEffect(() => {
 		const token = sessionStorage.getItem("token");
@@ -192,6 +196,49 @@ export default function Home() {
 		setRetrievedOrders(orders["rows"]);
 		console.log(orders);
 	}
+	
+	async function cancelOrder() {
+		
+		const user_token = sessionStorage.getItem("token") || null;
+	
+		if (user_token === null) {
+			alert("Please login again");
+			window.location.href = "/";	
+			return;
+		}
+		const bodyData = {
+			"transaction_id": document.getElementById("cancelorder_transaction_id").value,
+			"users": grabSelectedUsers()
+		}
+		const url = "http://localhost:8000/cancel-order";
+		const request = await fetch(url, {
+			method: "POST",	
+			headers: {
+				"Authorization": user_token,
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(bodyData),
+		})
+
+		switch (request.status) {
+			case 400 :
+				alert("Please fill out all body information to submit request");
+				break;
+
+			case 401: 
+				alert("Please login again");
+				window.location.href = "/";
+				return;
+			
+			case 200 :
+				document.getElementById("cancelOrderOutput").value = JSON.stringify(await request.json());
+				break;	
+
+			default :
+				break;
+		}
+
+	} 
 
 	return (
 		<div className={styles.page}>
@@ -226,7 +273,11 @@ export default function Home() {
 					{retrievedOrders.map((orderArr, ind) => {
 						return (
 							<span key={ind}>
-								<Order transaction_id={orderArr[6] || null} name={orderArr[4] || null} pipe={orderArr} />
+								<Order
+									transaction_id={orderArr[6] || null}
+									name={orderArr[4] || null}
+									pipe={orderArr}
+								/>
 							</span>
 						);
 					})}
@@ -307,6 +358,20 @@ export default function Home() {
 							Place Limit Order
 						</button>
 						<p style={{ color: "red" }} id="LimitOrderDebug"></p>
+					</div>
+					<div id="cancelOrderDiv">
+						<h3>Cancel Order</h3>
+						<input
+							type="text"
+							placeholder="Enter Transaction ID"
+							name="limit"
+							id="cancelorder_transaction_id"
+						/>
+						<br />
+						<button onClick={cancelOrder}>
+							Cancel Order	
+						</button>
+						<p style={{ color: "red" }} id="cancelOrderOutput"></p>
 					</div>
 				</div>
 			</div>

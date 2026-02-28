@@ -1,6 +1,5 @@
 "use client";
 
-import { doc } from "prettier";
 import styles from "./order.module.css";
 
 export default function Order(props) {
@@ -8,11 +7,14 @@ export default function Order(props) {
 	// implement cancel order
 	// cancel order needs to be iterative on server side.
 
+	// expose the transaction id
+
+
 	if (typeof props.pipe === "string") {
 		return <div className={styles.order}>{props.pipe}</div>;
 	}
 
-	const newArr = [...props.pipe.slice(0, 5), ...props.pipe.slice(7)];
+	const newArr = [...props.pipe.slice(0, 5), ...props.pipe.slice(6)];
 
 	async function getOrderStatus() {
 		const token = sessionStorage.getItem("token") || null;
@@ -73,7 +75,6 @@ export default function Order(props) {
 				<button onClick={getOrderStatus}>Get Order Status</button>
 				<p id="status_output"></p>
 			</span>
-			<button>Cancel Order</button>
 		</div>
 	);
 }
