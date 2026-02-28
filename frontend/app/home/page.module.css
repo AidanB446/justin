@@ -43,12 +43,20 @@
 }
 
 .stockManager {
-	width: 30%;
+	width: 60%;
 	padding: 10px;
 	border: 2px black solid;
 	padding: 10px;
 	overflow-y: scroll;
+	overflow-x: hidden;
 }
 
- 
-
+.stockDataOutput {
+	background: #111;
+	color: #00ff88;
+	padding: 12px;
+	border-radius: 6px;
+	font-family: monospace;
+	white-space: pre-wrap;
+	word-break: break-word;
+}

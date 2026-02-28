@@ -3,8 +3,6 @@
 import { useEffect, useState } from "react";
 import styles from "./page.module.css";
 
-import Order from "../components/order";
-
 export default function Home() {
 	const [users, setUsers] = useState([]);
 	const [usernames, setUsernames] = useState([]);
@@ -21,7 +19,7 @@ export default function Home() {
 			window.location.href = "/";
 		}
 
-		setToken("token");
+		setToken(token);
 
 		async function get_users() {
 			const url = "http://localhost:8000/get-all-users";
@@ -239,6 +237,50 @@ export default function Home() {
 		}
 	}
 
+	async function getStockInfo() {
+		const bodyData = {
+			symbol: document.getElementById("stock_get_info_symbol").value,
+		};
+
+		const url = "http://localhost:8000/get-stock-data";
+
+		const request = await fetch(url, {
+			method: "POST",
+			headers: {
+				Authorization: token,
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(bodyData),
+		});
+
+		switch (request.status) {
+			case 400:
+				alert("Please fill out all forms in field");
+				return;
+
+			case 401:
+				alert("Please sign in again, auth failed");
+				window.location.href = "/";
+				return;
+
+			case 200:
+				const data = await request.json();
+
+				document.getElementById("StockDataOutput").innerHTML =
+					Object.entries(data)
+						.map(
+							([k, v]) =>
+								`${k}: ${Array.isArray(v) ? v.join(" ") : v}`,
+						)
+						.join("<br>");
+
+				break;
+
+			default:
+				break;
+		}
+	}
+
 	return (
 		<div className={styles.page}>
 			<div className={styles.links}>
@@ -254,19 +296,18 @@ export default function Home() {
 					<h1>Stock Search</h1>
 					<br />
 					<h3>Get Stock Info</h3>
-					<span style={{display: "flex", flexDirection: "row", gap: "25px"}}>
-						<span className={styles.getStockInput}>
-							<input
-								type="text"
-								placeholder="Enter Stock Symbol"
-							/>
-							<br />
-							<button>Get Stock Info</button>
-						</span>
-						<span className={styles.output}>
-							<p id="StockDataOutput"></p>
-						</span>
-					</span>
+					<input
+						type="text"
+						id="stock_get_info_symbol"
+						placeholder="Enter Stock Symbol"
+					/>
+					<br />
+					<button onClick={getStockInfo}>Get Stock Info</button>
+					<br />
+					<pre
+						className={styles.stockDataOutput}
+						id="StockDataOutput"
+					></pre>
 				</div>
 				<div className={styles.ordersDiv}>
 					<h1>Place Orders</h1>
