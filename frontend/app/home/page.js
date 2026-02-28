@@ -4,8 +4,6 @@ import { useEffect, useState } from "react";
 import styles from "./page.module.css";
 
 import Order from "../components/order";
-import {doc} from "prettier";
-import {DEFAULT_SERIF_FONT} from "next/dist/shared/lib/constants";
 
 export default function Home() {
 	const [users, setUsers] = useState([]);
@@ -196,91 +194,65 @@ export default function Home() {
 		setRetrievedOrders(orders["rows"]);
 		console.log(orders);
 	}
-	
+
 	async function cancelOrder() {
-		
 		const user_token = sessionStorage.getItem("token") || null;
-	
+
 		if (user_token === null) {
 			alert("Please login again");
-			window.location.href = "/";	
+			window.location.href = "/";
 			return;
 		}
 		const bodyData = {
-			"transaction_id": document.getElementById("cancelorder_transaction_id").value,
-			"users": grabSelectedUsers()
-		}
+			transaction_id: document.getElementById(
+				"cancelorder_transaction_id",
+			).value,
+			users: grabSelectedUsers(),
+		};
 		const url = "http://localhost:8000/cancel-order";
 		const request = await fetch(url, {
-			method: "POST",	
+			method: "POST",
 			headers: {
-				"Authorization": user_token,
+				Authorization: user_token,
 				"Content-Type": "application/json",
 			},
 			body: JSON.stringify(bodyData),
-		})
+		});
 
 		switch (request.status) {
-			case 400 :
+			case 400:
 				alert("Please fill out all body information to submit request");
 				break;
 
-			case 401: 
+			case 401:
 				alert("Please login again");
 				window.location.href = "/";
 				return;
-			
-			case 200 :
-				document.getElementById("cancelOrderOutput").value = JSON.stringify(await request.json());
-				break;	
 
-			default :
+			case 200:
+				document.getElementById("cancelOrderOutput").value =
+					JSON.stringify(await request.json());
+				break;
+
+			default:
 				break;
 		}
-
-	} 
+	}
 
 	return (
 		<div className={styles.page}>
-			<div className={styles.userDiv}>
-				<a href="/user-portal">User Portal</a>
+			<div className={styles.links}>
+				<span className={styles.userDiv}>
+					<a href="/user-portal">User Portal</a>
+				</span>
+				<span className={styles.userDiv}>
+					<a href="/orders">Orders</a>
+				</span>
 			</div>
 			<div className={styles.mainContent}>
-				<div className={styles.orderManager}>
-					<div className={styles.getOrders}>
-						<input
-							id="select_year"
-							placeholder="Enter Year of Order"
-						/>
-						<select id="select_month">
-							<option value="">Month</option>
-							<option value="01">01</option>
-							<option value="02">02</option>
-							<option value="03">03</option>
-							<option value="04">04</option>
-							<option value="05">05</option>
-							<option value="06">06</option>
-							<option value="07">07</option>
-							<option value="08">08</option>
-							<option value="09">09</option>
-							<option value="09">09</option>
-							<option value="10">10</option>
-							<option value="11">11</option>
-							<option value="12">12</option>
-						</select>
-						<button onClick={getOrders}>Get Orders</button>
-					</div>
-					{retrievedOrders.map((orderArr, ind) => {
-						return (
-							<span key={ind}>
-								<Order
-									transaction_id={orderArr[6] || null}
-									name={orderArr[4] || null}
-									pipe={orderArr}
-								/>
-							</span>
-						);
-					})}
+				<div className={styles.stockManager}>
+					<h1>Stock Search</h1>		
+
 				</div>
 				<div className={styles.ordersDiv}>
 					<h1>Place Orders</h1>
@@ -368,9 +340,7 @@ export default function Home() {
 							id="cancelorder_transaction_id"
 						/>
 						<br />
-						<button onClick={cancelOrder}>
-							Cancel Order	
-						</button>
+						<button onClick={cancelOrder}>Cancel Order</button>
 						<p style={{ color: "red" }} id="cancelOrderOutput"></p>
 					</div>
 				</div>

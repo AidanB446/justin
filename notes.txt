@@ -33,20 +33,6 @@
 		come up with plan to run this full application locally on the clients machine.
 
 - TODO 	
-	- right under users should be a section of orders, scrollable last 50 orders
-		- make this a big scroll div too, dont scale the entire page. 	
-		- You should be able to click a dropdown on the ordah title and below 
-		comes a menu to cancel the ordah 
-	
-	- make close position iterative, and add it to the market functions section endpoint 
-
-	- USER PORTAL - 
-		- close position interface
-		- make users iterable table scrollable	
-
-
-	- add order functions to the order Manager
-	- create cancel order box inside the Place Orders menu in home page
-
+	write out the stock search box
 
 

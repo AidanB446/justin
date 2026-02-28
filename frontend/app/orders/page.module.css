@@ -1,0 +1,35 @@
+
+.page {
+	display: flex;
+	flex-direction: column;
+	gap: 30px;
+	align-items: center;
+}
+
+.orderManager {
+	width: 66%;
+	padding: 10px;
+	border: 2px black solid;
+	padding: 10px;
+	overflow-y: scroll;
+}
+
+.getOrders {
+	display: flex;
+	justify-content: space-around;
+	gap: 10%;
+	border-bottom: 2px solid black;
+	padding: 10px;
+}
+
+.backButton {
+	height: 50px;
+	font-size: 14pt;
+	padding: 15px;
+	border-radius: 10px;
+	background-color: white;
+	border: 2px solid black;
+	cursor: pointer;
+	width: fit-content;
+	float: left;
+}

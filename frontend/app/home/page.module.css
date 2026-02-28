@@ -4,6 +4,12 @@
 	gap: 25px;
 }
 
+.links {
+	display: flex;
+	flex-direction: row;	
+	gap: 20px;
+}
+
 .mainContent {
 	display: flex;
 	justify-content: space-evenly;
@@ -29,14 +35,6 @@
 	overflow-y: scroll;
 }
 
-.orderManager {
-	width: 66%;
-	padding: 10px;
-	border: 2px black solid;
-	padding: 10px;
-	overflow-y: scroll;
-}
-
 .getOrders {
 	display: flex;
 	justify-content: space-around;
@@ -44,3 +42,12 @@
 	border-bottom: 2px solid black;
 	padding: 10px;
 }
+
+.stockManager {
+	width: 66%;
+	padding: 10px;
+	border: 2px black solid;
+	padding: 10px;
+	overflow-y: scroll;
+} 
+
