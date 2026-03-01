@@ -241,6 +241,8 @@ export default function Home() {
 		const bodyData = {
 			symbol: document.getElementById("stock_get_info_symbol").value,
 		};
+		
+		document.getElementById("StockDataOutput").innerHTML = "Please Standby";
 
 		const url = "http://localhost:8000/get-stock-data";
 
@@ -385,18 +387,6 @@ export default function Home() {
 							Place Limit Order
 						</button>
 						<p style={{ color: "red" }} id="LimitOrderDebug"></p>
-					</div>
-					<div id="cancelOrderDiv">
-						<h3>Cancel Order</h3>
-						<input
-							type="text"
-							placeholder="Enter Transaction ID"
-							name="limit"
-							id="cancelorder_transaction_id"
-						/>
-						<br />
-						<button onClick={cancelOrder}>Cancel Order</button>
-						<p style={{ color: "red" }} id="cancelOrderOutput"></p>
 					</div>
 				</div>
 			</div>

@@ -3,12 +3,6 @@
 import styles from "./order.module.css";
 
 export default function Order(props) {
-	// implement get order status - in progress
-	// implement cancel order
-	// cancel order needs to be iterative on server side.
-
-	// expose the transaction id
-
 
 	if (typeof props.pipe === "string") {
 		return <div className={styles.order}>{props.pipe}</div>;

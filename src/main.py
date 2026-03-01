@@ -7,7 +7,7 @@ from database_interactions import check_if_user_exists, create_account, delete_a
 
 from get_data import get_order_info, get_stock_info, get_stock_position
 
-from market_interactions import cancel_orders, close_position, place_market_order, place_limit_order
+from market_interactions import close_position, place_market_order, place_limit_order
 
 from assests import User, password_auth, create_new_master_token, Error
 
@@ -435,31 +435,6 @@ def get_db_transactions_by_month() :
     orders = get_orders_by_time(year, month)    
 
     return {"rows": orders}, 200, {}
-
-# cancel whole transaction
-
-@app.route("/cancel-order", methods=["POST"])
-def cancel_user_orders() :
-    auth_header = request.headers.get("Authorization") 
-
-    if auth_header != CURRENT_MASTER_TOKEN  or auth_header == None:
-            return {"error": "auth failed"}, 401, {}
-     
-    data = request.get_json() 
-        
-    users = None 
-    transaction_id = None 
-
-    try :
-        users = data["users"]
-        transaction_id = data["transaction_id"]
-    except Exception as _:
-        return {"error": "insufficient json body data"}, 400, {}
-    
-    cancelOrderHandle = cancel_orders(users, transaction_id)
-
-    return {"status": cancelOrderHandle}, 200, {}     
-    
 
 @app.route("/get-all-users", methods=["GET"])
 def get_all_users_endpoint12() :
