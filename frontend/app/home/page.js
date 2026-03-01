@@ -124,7 +124,7 @@ export default function Home() {
 		}
 
 		const request = await fetch(
-			"http://localhost:8000/place_iterative_market_order",
+			"http://localhost:8000/place_iterative_limit_order",
 			{
 				method: "POST",
 				headers: {
@@ -135,14 +135,32 @@ export default function Home() {
 			},
 		);
 
-		const response = await request.json();
+		switch (request.status) {
+			
+			case 200 :
+				const response = await request.json();
 
-		document.getElementById("LimitOrderDebug").innerHTML =
-			JSON.stringify(response);
+				document.getElementById("LimitOrderDebug").innerHTML =
+					JSON.stringify(response);
 
-		for (const inp of inputs) {
-			inp.value = "";
-		}
+				for (const inp of inputs) {
+					inp.value = "";
+				}
+				break;
+
+			case 401:
+				alert("Please sign in again, auth failed");
+				window.location.href = "/";	
+				return;
+
+			case 400 :
+				alert("Please fill out all input boxes");
+				break;
+
+			default :
+				break;
+		}		
+
 	}
 
 	async function getOrders() {
@@ -309,7 +327,7 @@ export default function Home() {
 					<pre
 						className={styles.stockDataOutput}
 						id="StockDataOutput"
-					></pre>
+					>Stock Info Output</pre>
 				</div>
 				<div className={styles.ordersDiv}>
 					<h1>Place Orders</h1>

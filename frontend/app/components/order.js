@@ -3,7 +3,6 @@
 import styles from "./order.module.css";
 
 export default function Order(props) {
-
 	if (typeof props.pipe === "string") {
 		return <div className={styles.order}>{props.pipe}</div>;
 	}
@@ -39,7 +38,13 @@ export default function Order(props) {
 			case 200:
 				data = await request.json();
 				document.getElementById("status_output").innerHTML =
-					JSON.stringify(data);
+					Object.entries(data)
+						.map(
+							([k, v]) =>
+								`${k}: ${Array.isArray(v) ? v.join(" ") : v}`,
+						)
+						.join("<br>");
+
 				break;
 
 			case 401:
@@ -67,7 +72,10 @@ export default function Order(props) {
 			<span>{newArr.join(" | ")}</span>
 			<span className={styles.orderStatus}>
 				<button onClick={getOrderStatus}>Get Order Status</button>
-				<p id="status_output"></p>
+				<pre
+					className={styles.stockDataOutput}
+					id="status_output"
+				></pre>
 			</span>
 		</div>
 	);
