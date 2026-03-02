@@ -143,7 +143,14 @@ export default function User(props) {
 
 		const response = await request.json();
 	
-		document.getElementById("positionData").innerHTML = JSON.stringify(response);	
+		document.getElementById("positionData").innerHTML =
+			Object.entries(response)
+				.map(
+					([k, v]) =>
+						`${k}: ${Array.isArray(v) ? v.join(" ") : v}`,
+				)
+				.join("<br>");
+
 	}
 
 	if (toggle) {

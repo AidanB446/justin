@@ -172,8 +172,8 @@ def place_iterative_market_order() :
 
     for user in users :
         newUser = User(user)
-        getUserHandle = newUser.attempt_getdbinfo()
-        
+        getUserHandle = newUser.attempt_getdbinfo() # FLAG 500
+
         if not getUserHandle :
             userRegistrationMap[user] = "user not found" 
             continue
@@ -228,7 +228,11 @@ def place_iterative_limit_order() :
 
     for user in users :
         newUser = User(user)
-        getUserHandle = newUser.attempt_getdbinfo()
+        
+        print(user)
+        print(newUser)
+        
+        getUserHandle = newUser.attempt_getdbinfo() # FLAG 500
         
         if not getUserHandle :
             userRegistrationMap[user] = "user not found" 

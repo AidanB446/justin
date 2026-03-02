@@ -76,8 +76,7 @@ def place_market_order(users, stockSymbol, stockOperationQty, side) :
             return_data[username] = "order placed"
 
         except Exception as e:
-            print(f"Failed to submit order: {e}")
-            return_data[username] = "order failed"
+            return_data[username] = f"order failed: {e}"
 
     return return_data 
 
@@ -142,7 +141,7 @@ def place_limit_order(users, stockSymbol, stockOperationQty, side, limit) :
 
         except Exception as e:
             print(f"Failed to submit order: {e}")
-            return_data[username] = "order failed"
+            return_data[username] = "order failed: {e}"
 
     return return_data
 

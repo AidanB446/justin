@@ -74,7 +74,7 @@ export default function Home() {
 
 			if (inputElement.checked) {
 				let id = inputElement.id;
-				id = id.split("_")[1];
+				id = id.split("|")[1];
 				returnList.push(id);
 			}
 		}
@@ -86,12 +86,21 @@ export default function Home() {
 		const inputs = document.querySelectorAll("#MarketOrderDiv> input");
 
 		let bodyData = {};
+		
+		const selectedUsers = grabSelectedUsers();
 
-		bodyData["users"] = grabSelectedUsers();
+		if (selectedUsers.length === 0 ) {
+			document.getElementById("MarketOrderDebug").innerHTML = "Please select users to apply order to.";
+			return;
+		}
+
+		bodyData["users"] = selectedUsers;
 
 		for (const inp of inputs) {
 			bodyData[inp.name] = inp.value;
 		}
+		
+		console.log(bodyData);
 
 		const request = await fetch(
 			"http://localhost:8000/place_iterative_market_order",
@@ -106,8 +115,15 @@ export default function Home() {
 		);
 
 		const response = await request.json();
+		
 		document.getElementById("MarketOrderDebug").innerHTML =
-			JSON.stringify(response);
+			Object.entries(response)
+				.map(
+					([k, v]) =>
+						`${k}: ${Array.isArray(v) ? v.join(" ") : v}`,
+				)
+				.join("<br>");
+
 
 		for (const inp of inputs) {
 			inp.value = "";
@@ -338,7 +354,7 @@ export default function Home() {
 							<label key={index}>
 								<input
 									type="checkbox"
-									id={"usernameboxselect_" + name}
+									id={"usernameboxselect|" + name}
 								/>
 								{name}
 								<br />
@@ -372,7 +388,7 @@ export default function Home() {
 						<button onClick={placeMarketOrder}>
 							Place Market Order
 						</button>
-						<p style={{ color: "red" }} id="MarketOrderDebug"></p>
+						<p id="MarketOrderDebug"></p>
 					</div>
 
 					<div id="LimitOrderDiv" className={styles.placeLimitOrder}>
