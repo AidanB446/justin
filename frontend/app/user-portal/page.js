@@ -103,7 +103,11 @@ export default function UserPortal() {
 				window.location.href = "/";
 				break;
 
-			case 422:
+			case 422 :
+				alert("Please choose another username, username taken");
+				break;
+
+			case 400 :
 				alert("Please Fill Out all Form Fields");
 				break;
 

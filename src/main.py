@@ -49,8 +49,6 @@ def usermod(method) :
 
     if not supplied_token == CURRENT_MASTER_TOKEN  or supplied_token == None:
         return {"error": "unauthorized"}, 401, {} 
-   
-    # TODO make sure that a user wont create if the name already exists
 
     match method:
         case "create_account" :
