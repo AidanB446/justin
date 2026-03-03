@@ -8,10 +8,6 @@ export default function Home() {
 	const [usernames, setUsernames] = useState([]);
 	const [token, setToken] = useState("");
 
-	const [retrievedOrders, setRetrievedOrders] = useState([
-		"Please complete the fields above, and press the Get Orders button to retrieve previous transactions.",
-	]);
-
 	useEffect(() => {
 		const token = sessionStorage.getItem("token");
 
@@ -57,10 +53,7 @@ export default function Home() {
 			}
 		}
 
-		async function getOrders() {}
-
 		get_users();
-		getOrders();
 	}, []);
 
 	function grabSelectedUsers() {
@@ -86,11 +79,12 @@ export default function Home() {
 		const inputs = document.querySelectorAll("#MarketOrderDiv> input");
 
 		let bodyData = {};
-		
+
 		const selectedUsers = grabSelectedUsers();
 
-		if (selectedUsers.length === 0 ) {
-			document.getElementById("MarketOrderDebug").innerHTML = "Please select users to apply order to.";
+		if (selectedUsers.length === 0) {
+			document.getElementById("MarketOrderDebug").innerHTML =
+				"Please select users to apply order to.";
 			return;
 		}
 
@@ -99,7 +93,7 @@ export default function Home() {
 		for (const inp of inputs) {
 			bodyData[inp.name] = inp.value;
 		}
-		
+
 		console.log(bodyData);
 
 		const request = await fetch(
@@ -115,15 +109,12 @@ export default function Home() {
 		);
 
 		const response = await request.json();
-		
-		document.getElementById("MarketOrderDebug").innerHTML =
-			Object.entries(response)
-				.map(
-					([k, v]) =>
-						`${k}: ${Array.isArray(v) ? v.join(" ") : v}`,
-				)
-				.join("<br>");
 
+		document.getElementById("MarketOrderDebug").innerHTML = Object.entries(
+			response,
+		)
+			.map(([k, v]) => `${k}: ${Array.isArray(v) ? v.join(" ") : v}`)
+			.join("<br>");
 
 		for (const inp of inputs) {
 			inp.value = "";
@@ -152,12 +143,16 @@ export default function Home() {
 		);
 
 		switch (request.status) {
-			
-			case 200 :
+			case 200:
 				const response = await request.json();
 
 				document.getElementById("LimitOrderDebug").innerHTML =
-					JSON.stringify(response);
+					Object.entries(response)
+						.map(
+							([k, v]) =>
+								`${k}: ${Array.isArray(v) ? v.join(" ") : v}`,
+						)
+						.join("<br>");
 
 				for (const inp of inputs) {
 					inp.value = "";
@@ -166,17 +161,16 @@ export default function Home() {
 
 			case 401:
 				alert("Please sign in again, auth failed");
-				window.location.href = "/";	
+				window.location.href = "/";
 				return;
 
-			case 400 :
+			case 400:
 				alert("Please fill out all input boxes");
 				break;
 
-			default :
+			default:
 				break;
-		}		
-
+		}
 	}
 
 	async function getOrders() {
@@ -275,7 +269,7 @@ export default function Home() {
 		const bodyData = {
 			symbol: document.getElementById("stock_get_info_symbol").value,
 		};
-		
+
 		document.getElementById("StockDataOutput").innerHTML = "Please Standby";
 
 		const url = "http://localhost:8000/get-stock-data";
@@ -343,7 +337,9 @@ export default function Home() {
 					<pre
 						className={styles.stockDataOutput}
 						id="StockDataOutput"
-					>Stock Info Output</pre>
+					>
+						Stock Info Output
+					</pre>
 				</div>
 				<div className={styles.ordersDiv}>
 					<h1>Place Orders</h1>
