@@ -1,5 +1,4 @@
 
-from math import log
 from assests import Error
 from assests import new_transaction_id
 

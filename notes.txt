@@ -33,6 +33,9 @@
 
 - TODO 	
 	debug
-
 	modify account is succeding but returning a 401?
+
+	- close_position
+	- cancel_orders
+		- two functions in market interactions that are not implemented. 
 
