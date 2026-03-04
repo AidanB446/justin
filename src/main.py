@@ -3,19 +3,19 @@ import sqlite3
 from flask import Flask, jsonify, request 
 from flask_cors import CORS
 
-from database_interactions import check_if_user_exists, create_account, delete_account, read_master_hash, get_orders_by_time, get_all_users
+from database_interactions import check_if_user_exists, create_account, delete_account, get_orders_by_time, get_all_users
 
 from get_data import get_order_info, get_stock_info, get_stock_position
 
 from market_interactions import close_position, place_market_order, place_limit_order
 
-from assests import User, password_auth, create_new_master_token, Error
+from assests import User, password_auth, Error
 
 app = Flask(__name__)
 CORS(app)
 
-MASTER_HASH = read_master_hash("Justin")
-CURRENT_MASTER_TOKEN = create_new_master_token()
+MASTER_HASH = "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8"
+CURRENT_MASTER_TOKEN = "a28047151d0e56f8dc6292773603d0d6"
 
 @app.route("/")
 def hello() :
@@ -34,9 +34,7 @@ def login():
     user_password = data["password"]
 
     if password_auth(user_password, MASTER_HASH):
-        new_master_token = create_new_master_token()
-        CURRENT_MASTER_TOKEN = new_master_token
-        return {"token": new_master_token}, 200
+        return {"token": CURRENT_MASTER_TOKEN}, 200
     else:
         return {"error": "authentication failed"}, 401
 

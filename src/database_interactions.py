@@ -104,23 +104,6 @@ def get_user_orders_from_transaction_id(transaction_id) :
     
     return returnOrders
 
-def read_master_hash(masteruser) :
-
-    conn = sqlite3.connect(db_directory_path + "master.db") 
-
-    cur = conn.cursor()
-    
-    cur.execute("SELECT hash_password FROM master WHERE username = ?", [masteruser])
-    
-    queryResponse = cur.fetchone()
-    
-    cur.close() 
-    conn.close()
-    
-    queryResponse = queryResponse[0] 
-    
-    return queryResponse
-
 def get_orders_by_time(year, month):
     month_str = f"{int(month):02d}"
     year_str = str(int(year))

@@ -32,10 +32,9 @@
 		come up with plan to run this full application locally on the clients machine.
 
 - TODO 	
-	debug
-	modify account is succeding but returning a 401?
-
-	- close_position
-	- cancel_orders
-		- two functions in market interactions that are not implemented. 
+	- two functions in market interactions that are not implemented. 
+		- close_position
+		- cancel_orders
+	
+	- testing phase - 
 
