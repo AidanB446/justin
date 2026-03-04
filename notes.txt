@@ -35,6 +35,14 @@
 	- two functions in market interactions that are not implemented. 
 		- close_position
 		- cancel_orders
-	
+		
+	- testing fixes -
+		- rendering issue due to not unique identifiers
+			- fixed with react useRef implementation
+
 	- testing phase - 
+		- error rendering orders
+		
+
+
 

@@ -1,11 +1,14 @@
 "use client";
 
 import styles from "./order.module.css";
+import { useRef } from "react";
 
 export default function Order(props) {
 	if (typeof props.pipe === "string") {
 		return <div className={styles.order}>{props.pipe}</div>;
 	}
+
+	const statusOutput = useRef(null);
 
 	const newArr = [...props.pipe.slice(0, 5), ...props.pipe.slice(6)];
 
@@ -37,13 +40,16 @@ export default function Order(props) {
 		switch (request.status) {
 			case 200:
 				data = await request.json();
-				document.getElementById("status_output").innerHTML =
-					Object.entries(data)
+				if (statusOutput.current) {
+					statusOutput.current.innerHTML = Object.entries(data)
 						.map(
 							([k, v]) =>
 								`${k}: ${Array.isArray(v) ? v.join(" ") : v}`,
 						)
 						.join("<br>");
+
+					break;
+				}
 
 				break;
 
@@ -74,7 +80,7 @@ export default function Order(props) {
 				<button onClick={getOrderStatus}>Get Order Status</button>
 				<pre
 					className={styles.stockDataOutput}
-					id="status_output"
+					ref={statusOutput}
 				></pre>
 			</span>
 		</div>
