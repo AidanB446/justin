@@ -300,8 +300,6 @@ def get_pos() :
     
     if isinstance(position_data, Error) :
         
-        # handle for Position is not a value
-
         print(position_data.error_message)
         print(position_data.error)
         
@@ -310,8 +308,7 @@ def get_pos() :
         if errorValue is None :
             pass
         else :
-            if errorValue.code == 40410000 :
-                return {"status": "Position Does Not Exist"}, 200, {}
+            return {"status": errorValue}, 200, {}
 
         return {"error": "couldn't get position"}, 400, {}
 

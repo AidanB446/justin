@@ -41,8 +41,7 @@
 			- fixed with react useRef implementation
 
 	- testing phase - 
-		- error rendering orders
-		
+		- error rendering multiple users, try getting stock positions of more than one user 
 
 
 
