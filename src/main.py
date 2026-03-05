@@ -225,9 +225,6 @@ def place_iterative_limit_order() :
     for user in users :
         newUser = User(user)
         
-        print(user)
-        print(newUser)
-        
         getUserHandle = newUser.attempt_getdbinfo() # FLAG 500
         
         if not getUserHandle :

@@ -41,7 +41,6 @@
 			- fixed with react useRef implementation
 
 	- testing phase - 
-		- error rendering multiple users, try getting stock positions of more than one user 
-
+		- need to use ref instead of just id tags
 
 

@@ -14,14 +14,10 @@ class User :
     
         conn = sqlite3.connect("./db/" + "accounts.db")  
         cur = conn.cursor()
-    
-        print(self.name)
 
         cur.execute("SELECT * FROM accounts WHERE name = ?", [self.name])
         
         rows = cur.fetchone()   # evaluates to none
-        
-        print(rows) 
 
         if len(rows) == 0 :
             return False  
