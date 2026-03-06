@@ -128,6 +128,12 @@ export default function UserPortal() {
 	function backButton() {
 		window.location.href = "/home";
 	}
+	
+	
+	if (users.length === 0) {
+		return <div>please standby</div>
+	}
+
 
 	return (
 		<div>

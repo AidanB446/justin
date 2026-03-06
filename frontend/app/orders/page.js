@@ -51,9 +51,13 @@ export default function OrderManagerPage() {
 		}
 
 		const orders = await getOrdersRequest.json();
-		setRetrievedOrders(orders["rows"]);
+		const orderRows = orders["rows"]; 
+		setRetrievedOrders(orderRows);
 		console.log(orders);
 	}
+	
+	
+
 
 	return (
 		<div className={styles.page}>

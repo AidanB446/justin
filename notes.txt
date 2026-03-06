@@ -4,6 +4,5 @@
 	come up with plan to run this full application locally on the clients machine.
 
 - TODO 	
-		- add placeholder fields to all inputs		
 		- add delete button to order component.	
 

@@ -5,7 +5,7 @@ import styles from "./page.module.css";
 
 export default function Home() {
 	const [users, setUsers] = useState([]);
-	const [usernames, setUsernames] = useState([]);
+	const [usernames, setUsernames] = useState(["please,", "wait"]);
 	const [token, setToken] = useState("");
 
 	useEffect(() => {
