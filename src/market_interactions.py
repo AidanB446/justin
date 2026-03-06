@@ -185,11 +185,6 @@ def cancel_orders(users : list[str], transaction_id) :
     return returnData
 
 def close_position(user, symbol) :
-    
-    # TODO needs to be iterative,
-    # clean up error returns 
-    # return iterative status map
-
     api_key = user.api_key
     api_secret= user.api_secret
     paper_trading_bool = user.paper_trading

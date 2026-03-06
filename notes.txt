@@ -4,7 +4,6 @@
 	come up with plan to run this full application locally on the clients machine.
 
 - TODO 	
-		- todo in one of the files,,, i think assests??	
 		- get stock data endoint throws a 503 error when bad symbol name.
 		- bad data in the market and limit order breaks the app.	
 		- check max width on all potential api error outputs, make sure they scale vertically!!!
