@@ -24,7 +24,7 @@ def get_latest_price(user, stockSymbols) :
     try :
         client = StockHistoricalDataClient(api_key, api_secret)
     except APIError as e :
-        raised_error = Error("alpaca error", e)        
+        raised_error = Error("alpaca error", str(e))        
         return raised_error 
 
     request_params = StockLatestTradeRequest(symbol_or_symbols=stockSymbols)
@@ -59,14 +59,14 @@ def get_order_info(user, order_client_id) :
         trading_client = TradingClient(api_key, api_secret, paper=paper_trading_bool)
 
     except APIError as e:
-        return Error("alpaca error", e)
+        return Error("alpaca error", str(e))
         
     order = None
 
     try :
         order = trading_client.get_order_by_client_id(order_client_id)
     except Exception as e: 
-        return Error("alpaca error", e)
+        return Error("alpaca error", str(e))
         
     order_data = {}
 
@@ -106,16 +106,15 @@ def get_stock_position(user, symbol) :
         trading_client = TradingClient(api_key, api_secret, paper=paper_trading_bool)
 
     except APIError as e:
-        return Error("alpaca error", e)
+        return Error("alpaca error", str(e))
     
-
     symbol_position = None 
 
     try :
         symbol_position= trading_client.get_open_position(symbol)
 
     except Exception as e :
-        return Error("alpaca error", e)
+        return Error("alpaca error", str(e))
     
     return_obj = {}
     
@@ -202,7 +201,7 @@ def get_buying_power(user) :
         accountData = trading_client.get_account()
 
     except APIError as e:
-        return Error("alpaca error", e)
+        return Error("alpaca error", str(e))
     
     buying_power = None
     cash = None

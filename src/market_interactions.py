@@ -67,11 +67,6 @@ def place_market_order(users, stockSymbol, stockOperationQty, side) :
 
             result = insertDBOrder("market", stockSymbol, stockOperationQty, side, username, client_order_id, client_transaction_id, date_and_time)
             
-            if result != None :
-                print(result)
-                print(result.error_message)
-                print(result.error)
-            
             return_data[username] = "order placed"
 
         except Exception as e:
@@ -108,7 +103,6 @@ def place_limit_order(users, stockSymbol, stockOperationQty, side, limit) :
 
         except APIError as e:
             return_data[username] = "Trading Client failed to initialize"
-            print(e) 
             continue
 
         limit_order_data = LimitOrderRequest(
@@ -133,13 +127,9 @@ def place_limit_order(users, stockSymbol, stockOperationQty, side, limit) :
             
             result = insertDBOrder("limit", stockSymbol, stockOperationQty, side, username, client_order_id, client_transaction_id, date_and_time)
             
-            if result != None :
-                print(result)
-            
             return_data[username] = "order placed"
 
         except Exception as e:
-            print(f"Failed to submit order: {e}")
             return_data[username] = f"order failed: {e}"
 
     return return_data
@@ -165,7 +155,7 @@ def cancel_orders(users : list[str], transaction_id) :
             trading_client = TradingClient(api_key, api_secret, paper=paper_trading_bool)
 
         except APIError as e :
-            returnData[user.user] = "Trading Client failed to initialize"
+            returnData[user.user] = f"Trading Client failed to initialize: {e}"
             continue 
         
         order = None
@@ -173,7 +163,7 @@ def cancel_orders(users : list[str], transaction_id) :
         try :
             order= trading_client.get_order_by_client_id(user.client_order_id)
         except Exception as e :
-            returnData[user.user] = "client_order_id no longer active"
+            returnData[user.user] = f"client_order_id no longer active: {e}"
             continue
 
         order_id = None
@@ -190,13 +180,16 @@ def cancel_orders(users : list[str], transaction_id) :
             insertDBOrder("cancel request", user.symbol, user.qty, user.side, user.user, user.client_order_id, user.transaction_id, user.date)
 
         except Exception as e :
-            returnData[user.user] = "Cancellation request failed to submit"
-            print(e)
+            returnData[user.user] = f"Cancellation request failed to submit: {e}"
 
     return returnData
 
 def close_position(user, symbol) :
-     
+    
+    # TODO needs to be iterative,
+    # clean up error returns 
+    # return iterative status map
+
     api_key = user.api_key
     api_secret= user.api_secret
     paper_trading_bool = user.paper_trading
@@ -235,4 +228,5 @@ def close_position(user, symbol) :
 
     if isinstance(log_handler, Error) :
         return Error("Couldn't write to db successfully", log_handler.error)
+
 

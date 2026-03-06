@@ -31,7 +31,12 @@ class User :
 class Error :
     def __init__(self, error_message, error=None) :
         self.error_message = error_message
-        self.error= error 
+
+        try :
+            self.error=str(error) 
+        except Exception as _:
+            self.error = error
+
 
 class UserOrder:
     def __init__(self, ordertype, symbol, qty, side, user, client_order_id, transaction_id, date) :

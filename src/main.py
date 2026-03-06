@@ -264,7 +264,7 @@ def getstock() :
     stockData = get_stock_info(stockSymbol)   
 
     if isinstance(stockData, Error) :
-        return {"error": "couldn't get stock data"}, 503, {}
+        return {"error": stockData.error_message}, 503, {}
 
     return jsonify(stockData) 
 
@@ -296,18 +296,7 @@ def get_pos() :
     position_data = get_stock_position(newUser, symbol)
     
     if isinstance(position_data, Error) :
-        
-        print(position_data.error_message)
-        print(position_data.error)
-        
-        errorValue = position_data.error
-        
-        if errorValue is None :
-            pass
-        else :
-            return {"status": errorValue}, 200, {}
-
-        return {"error": "couldn't get position"}, 400, {}
+        return {"status": position_data.error}, 200, {}
 
     return position_data, 200, {}
 
@@ -362,7 +351,7 @@ def get_user_order_status() :
     order_data = get_order_info(user, client_order_id)
    
     if isinstance(order_data, Error) :
-        return {"error": "Please check user credentials and make sure order is still active. Check on alpaca dashboard"}, 422, {}
+        return {"status": order_data.error}, 422, {}
 
     return order_data, 200, {}
 

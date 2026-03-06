@@ -32,15 +32,24 @@
 		come up with plan to run this full application locally on the clients machine.
 
 - TODO 	
-	- two functions in market interactions that are not implemented. 
-		- close_position
-		- cancel_orders
+		- Buying power in the user interface
+		- Make the get stock info endpoint not depend on a user existing in the database.
+		- make the close position function/endpoint iterative
+		- todo in one of the files,,, i think assests??	
+		- get stock data endoint throws a 503 error when bad symbol name.
+		- bad data in the market and limit order breaks the app.	
+		- check max width on all potential api error outputs, make sure they scale vertically!!!
+		- back button on the order page float left.
 		
+
 	- testing fixes -
 		- rendering issue due to not unique identifiers
 			- fixed with react useRef implementation
 
 	- testing phase - 
 		- need to use ref instead of just id tags
+
+	
+
 
 
