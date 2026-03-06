@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 
 export default function UserPortal() {
 	const [users, setUsers] = useState([]);
+	const [userBuyingPower, setUserBuyingPower] = useState({});
 	const [token, setToken] = useState("");
 
 	useEffect(() => {
@@ -36,6 +37,7 @@ export default function UserPortal() {
 					case 200:
 						data = await request.json();
 						setUsers(data["users"]);
+						setUserBuyingPower(data["buying_power"])	
 						break;
 
 					case 401:
@@ -146,6 +148,8 @@ export default function UserPortal() {
 								key={ind}
 								username={userobj.name}
 								token={token}
+								buying_power={userBuyingPower[userobj.name].buying_power}
+								cash={userBuyingPower[userobj.name].cash}
 								api_key={userobj.api_key}
 								api_secret={userobj.api_secret}
 								paper_trading={String(

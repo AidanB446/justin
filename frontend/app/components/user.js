@@ -173,6 +173,8 @@ export default function User(props) {
 				<div className={styles.content}>
 					<p>api key: {props.api_key}</p>
 					<p>api secret: {props.api_secret}</p>
+					<p>Buying Power: {props.buying_power}</p>
+					<p>Cash: {props.cash}</p>
 					<p>paper trading: {props.paper_trading}</p>
 					<button onClick={toggleSwitch}>Edit Values</button>
 					<button onClick={deleteUser}>Delete User</button>

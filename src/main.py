@@ -5,7 +5,7 @@ from flask_cors import CORS
 
 from database_interactions import check_if_user_exists, create_account, delete_account, get_orders_by_time, get_all_users
 
-from get_data import get_order_info, get_stock_info, get_stock_position
+from get_data import get_buying_power, get_order_info, get_stock_info, get_stock_position
 
 from market_interactions import close_position, place_market_order, place_limit_order
 
@@ -427,8 +427,31 @@ def get_all_users_endpoint12() :
             return {"error": "auth failed"}, 401, {}
      
     users = get_all_users() 
+    
+    buying_power_return= {}
 
-    return {"users": users}, 200, {}
+    for user in users :
+        username = None
+        
+        if not isinstance(user, dict) :
+            continue
+
+        username = user["name"]
+    
+        user = User(username)
+        user.attempt_getdbinfo()
+
+        buying_power = get_buying_power(user) 
+
+        if isinstance(buying_power, Error) :
+            buying_power_return[username] = buying_power.error
+            continue
+        
+        buying_power_return[username] = buying_power 
+
+
+    return {"users": users, "buying_power": buying_power_return}, 200, {}
+
 
 app.run(port=8000)
 
