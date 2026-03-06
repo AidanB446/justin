@@ -108,17 +108,38 @@ export default function Home() {
 			},
 		);
 
-		const response = await request.json();
+		switch (request.status) {
+			case 200:
+				const response = await request.json();
+				document.getElementById("MarketOrderDebug").innerHTML =
+					Object.entries(response)
+						.map(
+							([k, v]) =>
+								`${k}: ${Array.isArray(v) ? v.join(" ") : v}`,
+						)
+						.join("<br>");
 
-		document.getElementById("MarketOrderDebug").innerHTML = Object.entries(
-			response,
-		)
-			.map(([k, v]) => `${k}: ${Array.isArray(v) ? v.join(" ") : v}`)
-			.join("<br>");
+				for (const inp of inputs) {
+					inp.value = "";
+				}
 
-		for (const inp of inputs) {
-			inp.value = "";
+				break;
+
+			case 401:
+				alert("Please sign in again, auth failed");
+				window.location.href = "/";
+				return;
+
+			case 400:
+				alert(
+					"Unprocessable input, please double check the data in inputs",
+				);
+				break;
+
+			default:
+				break;
 		}
+
 	}
 
 	async function placeLimitOrder() {
@@ -165,7 +186,9 @@ export default function Home() {
 				return;
 
 			case 400:
-				alert("Please fill out all input boxes");
+				alert(
+					"Unprocessable input, please double check the data in inputs",
+				);
 				break;
 
 			default:

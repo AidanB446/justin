@@ -157,7 +157,7 @@ def place_iterative_market_order() :
         stockQty = int(data["qty"])
         stockSide = data["side"] 
 
-    except KeyError as _ :
+    except Exception as _ :
         return  (
             {"error": "json body missing key data"}, 
             400, 
@@ -213,7 +213,7 @@ def place_iterative_limit_order() :
         stockSide = data["side"] 
         stockLimit = data["limit"] 
 
-    except KeyError as _ :
+    except Exception as _ :
         return  (
             {"error": "json body missing key data"}, 
             400, 
