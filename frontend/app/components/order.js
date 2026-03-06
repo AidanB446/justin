@@ -72,6 +72,42 @@ export default function Order(props) {
 				break;
 		}
 	}
+	
+	async function deleteOrder() {
+
+		const token = sessionStorage.getItem("token") || null;
+
+		if (token === null) {
+			alert("Please sign in");
+			window.location.href = "/";
+		}
+
+		const url = "http://localhost:8000/delete-order"
+	
+		const requestData = {"client_order_id": props.client_order_id};
+		const request = await fetch(url, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				"Authorization": token,
+			},
+			body: JSON.stringify(requestData)
+		});
+
+		switch (request.status) {
+			case 401:
+				alert("Please login again");
+				window.location.href = "/";
+				return;
+
+			case 200 :
+   				props.onDelete(props.client_order_id);
+				return;
+
+			default:
+				break;
+		}
+	}
 
 	return (
 		<div className={styles.order}>
@@ -83,6 +119,11 @@ export default function Order(props) {
 					ref={statusOutput}
 				></pre>
 			</span>
+			<button onClick={deleteOrder}>
+				Delete Order
+			</button>	
+
+
 		</div>
 	);
 }

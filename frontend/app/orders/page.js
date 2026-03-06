@@ -7,6 +7,10 @@ export default function OrderManagerPage() {
 		"Please complete the fields above, and press the Get Orders button to retrieve previous transactions.",
 	]);
 
+	function removeOrder(id) {
+		setRetrievedOrders((prev) => prev.filter((o) => o[5] !== id));
+	}
+
 	async function getOrders() {
 		const usertoken = sessionStorage.getItem("token");
 
@@ -51,13 +55,9 @@ export default function OrderManagerPage() {
 		}
 
 		const orders = await getOrdersRequest.json();
-		const orderRows = orders["rows"]; 
+		const orderRows = orders["rows"];
 		setRetrievedOrders(orderRows);
-		console.log(orders);
 	}
-	
-	
-
 
 	return (
 		<div className={styles.page}>
@@ -96,6 +96,8 @@ export default function OrderManagerPage() {
 							<Order
 								transaction_id={orderArr[6] || null}
 								name={orderArr[4] || null}
+								client_order_id={orderArr[5]}
+								onDelete={removeOrder}	
 								pipe={orderArr}
 							/>
 						</span>

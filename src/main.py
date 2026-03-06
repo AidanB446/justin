@@ -1,10 +1,9 @@
 
-from os import close
 import sqlite3
 from flask import Flask, jsonify, request 
 from flask_cors import CORS
 
-from database_interactions import check_if_user_exists, create_account, delete_account, get_orders_by_time, get_all_users
+from database_interactions import check_if_user_exists, create_account, delete_account, delete_order, get_orders_by_time, get_all_users
 
 from get_data import get_buying_power, get_order_info, get_stock_info, get_stock_position
 
@@ -425,7 +424,7 @@ def get_all_users_endpoint12() :
     auth_header = request.headers.get("Authorization") 
 
     if auth_header != CURRENT_MASTER_TOKEN  or auth_header == None:
-            return {"error": "auth failed"}, 401, {}
+        return {"error": "auth failed"}, 401, {}
      
     users = get_all_users() 
     
@@ -453,7 +452,27 @@ def get_all_users_endpoint12() :
 
     return {"users": users, "buying_power": buying_power_return}, 200, {}
 
+    
+@app.route("/delete-order", methods=["POST"])
+def delete_order_endpoint() :
+    auth_header = request.headers.get("Authorization") 
+
+    if auth_header != CURRENT_MASTER_TOKEN  or auth_header == None:
+        return {"error": "auth failed"}, 401, {}
+     
+    data = request.get_json()
+    
+    client_order_id = None
+
+    try :
+        client_order_id = data["client_order_id"] 
+
+    except Exception as _ :
+        return {"error": "missing key json body data"}, 400, {} 
+
+    
+    delete_order(client_order_id)
+    return {}, 200, {} 
 
 app.run(port=8000)
-
 

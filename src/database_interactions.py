@@ -5,6 +5,14 @@ from assests import Error, UserOrder
 
 db_directory_path = "./db/"
 
+def delete_order(client_order_id) :
+    conn = sqlite3.connect(db_directory_path + "orders.db")
+    cur = conn.cursor() 
+    cur.execute("DELETE FROM orders WHERE client_order_id=?", [client_order_id]) 
+    conn.commit() 
+    cur.close()
+    conn.close()
+
 def get_all_users() :
     conn = sqlite3.connect(db_directory_path + "accounts.db")
 
