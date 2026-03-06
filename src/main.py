@@ -1,4 +1,5 @@
 
+from os import close
 import sqlite3
 from flask import Flask, jsonify, request 
 from flask_cors import CORS
@@ -365,36 +366,36 @@ def close_total_stock_position() :
      
     data = request.get_json() 
     
-    username = None
+    users= None
     symbol = None
 
     try :
-        username = data["name"]
+        users = data["users"]
         symbol= data["symbol"]
  
     except Exception as _:
         return {"error": "insufficient json body data"}, 400, {}
     
+    returnData = {}
 
-    user = User(username)
-    user_init_handle = user.attempt_getdbinfo()
-    
-    if isinstance(user_init_handle, Error) :
-        return {"error": "user not found"}, 401, {}
-    
-    
-    close_position_handle = close_position(user, symbol)
+    for username in users :
 
-    # future error handling
-    if isinstance(close_position_handle, Error) :
-        error_message = close_position_handle.error_message
+        user = User(username)
+        user_init_handle = user.attempt_getdbinfo()
         
-        if error_message == "Trading Client failed to initialize" :
-            return {"error": "auth failed"}, 401, {}
-        else :
-            return {"error": "couldn't close position"}, 400, {}
+        if isinstance(user_init_handle, Error) :
+            returnData[username] = "user not found"  
+            continue 
 
-    return {"status": "sucess"}, 200, {}
+        close_position_handle = close_position(user, symbol)
+        
+        if isinstance(close_position_handle, Error) :
+            returnData[username] = "trading client failed to initialize"  
+            continue 
+
+        returnData[username] = "success"
+
+    return {"status": returnData}, 200, {}
 
 @app.route("/get-transactions", methods=["POST"])
 def get_db_transactions_by_month() :

@@ -224,9 +224,6 @@ def close_position(user, symbol) :
     
     date_and_time = datetime.now().isoformat()
    
-    log_handler= insertDBOrder("close position", symbol, "all", "close", username, client_order_id, client_transaction_id, date_and_time)
-
-    if isinstance(log_handler, Error) :
-        return Error("Couldn't write to db successfully", log_handler.error)
+    insertDBOrder("close position", symbol, "all", "close", username, client_order_id, client_transaction_id, date_and_time)
 
 

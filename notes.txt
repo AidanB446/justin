@@ -1,53 +1,15 @@
 
-- AI DESCRIPTION FOR TRADING MINDSET - 
-		How these fit together (mental model)
 
-		When a trader looks at a stock, their brain does this:
-
-		Is the market open?
-
-		What’s the current bid/ask?
-
-		What was the last trade price?
-
-		What’s the short-term trend (1m/5m candles)?
-
-		Is volume confirming the move?
-
-		That’s the decision loop.
-
-	functions created: 
-		* get_buying_power() - get your buying power
-		* close_position() - close your positon - remove your risk from stock entirely.
-		* get_positions() - get your position on stock
-		* get_order_status() - get order status
-		* get_order_info()	
-		* place_market_order() - placing a market order -
-		* get_latest_price() - get latest price of stock
-		* place_limit_order() - placing a limit order - 
-	
-- SHIPPING DEMO -
-	
-	- COME UP -
-		come up with plan to run this full application locally on the clients machine.
+- COME UP -
+	come up with plan to run this full application locally on the clients machine.
 
 - TODO 	
-		- make the close position function/endpoint iterative
 		- todo in one of the files,,, i think assests??	
 		- get stock data endoint throws a 503 error when bad symbol name.
 		- bad data in the market and limit order breaks the app.	
 		- check max width on all potential api error outputs, make sure they scale vertically!!!
 		- back button on the order page float left.
-		
-
-	- testing fixes -
-		- rendering issue due to not unique identifiers
-			- fixed with react useRef implementation
-
-	- testing phase - 
-		- need to use ref instead of just id tags
-
-	
+		- add placeholder fields to all inputs		
 
 
 
