@@ -3,7 +3,6 @@
 	display: flex;
 	flex-direction: column;
 	gap: 30px;
-	align-items: center;
 }
 
 .orderManager {
@@ -12,6 +11,7 @@
 	border: 2px black solid;
 	padding: 10px;
 	overflow-y: scroll;
+	align-self: center;
 }
 
 .getOrders {
@@ -31,5 +31,4 @@
 	border: 2px solid black;
 	cursor: pointer;
 	width: fit-content;
-	float: left;
 }
