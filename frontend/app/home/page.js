@@ -173,98 +173,6 @@ export default function Home() {
 		}
 	}
 
-	async function getOrders() {
-		const usertoken = sessionStorage.getItem("token");
-
-		if (usertoken === null) {
-			window.location.href = "/";
-		}
-
-		const month = document.getElementById("select_month").value;
-		const year = document.getElementById("select_year").value;
-
-		if (month === "" || year === "") {
-			alert("Please select a month, and year");
-			return;
-		}
-
-		const getOrdersRequest = await fetch(
-			"http://localhost:8000/get-transactions",
-			{
-				method: "POST",
-				headers: {
-					Authorization: usertoken,
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({ year: year, month: month }),
-			},
-		);
-
-		switch (getOrdersRequest.status) {
-			case 400:
-				alert(
-					"Bad or no data given, please fill out the input boxes. (only numbers)",
-				);
-				return;
-
-			case 401:
-				alert("Auth failed, please login again.");
-				window.location.href = "/";
-				return;
-
-			default:
-				break;
-		}
-
-		const orders = await getOrdersRequest.json();
-		setRetrievedOrders(orders["rows"]);
-		console.log(orders);
-	}
-
-	async function cancelOrder() {
-		const user_token = sessionStorage.getItem("token") || null;
-
-		if (user_token === null) {
-			alert("Please login again");
-			window.location.href = "/";
-			return;
-		}
-		const bodyData = {
-			transaction_id: document.getElementById(
-				"cancelorder_transaction_id",
-			).value,
-			users: grabSelectedUsers(),
-		};
-		const url = "http://localhost:8000/cancel-order";
-		const request = await fetch(url, {
-			method: "POST",
-			headers: {
-				Authorization: user_token,
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify(bodyData),
-		});
-
-		switch (request.status) {
-			case 400:
-				alert("Please fill out all body information to submit request");
-				break;
-
-			case 401:
-				alert("Please login again");
-				window.location.href = "/";
-				return;
-
-			case 200:
-				document.getElementById("cancelOrderOutput").value =
-					JSON.stringify(await request.json());
-				break;
-
-			default:
-				break;
-		}
-	}
-
 	async function getStockInfo() {
 		const bodyData = {
 			symbol: document.getElementById("stock_get_info_symbol").value,
@@ -296,13 +204,8 @@ export default function Home() {
 			case 200:
 				const data = await request.json();
 
-				document.getElementById("StockDataOutput").innerHTML =
-					Object.entries(data)
-						.map(
-							([k, v]) =>
-								`${k}: ${Array.isArray(v) ? v.join(" ") : v}`,
-						)
-						.join("<br>");
+				document.getElementById("StockDataOutput").textContent =
+					JSON.stringify(data, null, 2);
 
 				break;
 
