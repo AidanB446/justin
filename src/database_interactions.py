@@ -25,9 +25,9 @@ def get_all_users() :
 
     for row in userRows :
         userDict = {
+            "name" : row[2],
             "api_key" : row[0],
             "api_secret" : row[1],
-            "name" : row[2],
             "paper_trading" : row[3],
         }
 

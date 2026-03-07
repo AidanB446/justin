@@ -1,6 +1,5 @@
 
 import requests
-import sqlite3
 from alpaca.common.exceptions import APIError
 
 from alpaca.data.requests import StockLatestTradeRequest
@@ -175,8 +174,8 @@ def get_buying_power(user) :
         
         accountData = trading_client.get_account()
 
-    except APIError as e:
-        return Error("alpaca error", str(e))
+    except Exception as e:
+        return Error("trading client failed", str(e))
     
     buying_power = None
     cash = None

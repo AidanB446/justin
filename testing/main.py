@@ -17,19 +17,19 @@ data = request1.json()
 
 token = data["token"]
 
-url = "http://localhost:8000/close-position"
+url = "http://localhost:8000/get-buying-power"
 
 headers = {
-        "Authorization": token
+        "Authorization": token,
+        "Content-Type": "application/json"
         }
 
 requestData = {
-        "name": "Aidan", 
-        "symbol": "boogi",
+        "users": ["Aidan", "daniel", "asdfsadf"], 
         }
 
 request2 = requests.post(url, json=requestData, headers=headers)
 
-print(request2.text)
-
+print(request2.status_code)
+print(request2.json())
 

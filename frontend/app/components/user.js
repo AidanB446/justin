@@ -4,12 +4,12 @@ import styles from "./user.module.css";
 import { useState, useRef } from "react";
 
 export default function User(props) {
-	// document select lists
-	// func submit edit inputs function
-	// stock symbol input box
-
 	const positionData = useRef(null);
 	const stockSymbolInput = useRef(null);
+	
+	const buying_power_output = useRef(null);
+	const cash_output = useRef(null);
+
 	const [toggle, setToggle] = useState(true);
 
 	function toggleSwitch() {
@@ -116,15 +116,12 @@ export default function User(props) {
 	}
 
 	async function getStockPos() {
-		// returning 400
 		
 		if (!stockSymbolInput) {
 			alert("dom never rendered with the stockSymbolInput");
 			return;	
 		}
 		
-
-		// FLAG
 		const symbol = stockSymbolInput.current.value;
 
 		const request = await fetch(
@@ -166,6 +163,58 @@ export default function User(props) {
 		}
 	}
 
+
+	async function getBuyingPower() {
+		buying_power_output.current.innerHTML = "Please stand by";	
+
+		const token = sessionStorage.getItem("token") || null;	
+			
+		if (token === null) {
+			alert("Please log in again, bad auth");
+			buying_power_output.current.innerHTML = "";	
+			window.location.href = "/";
+			return;
+		}
+		
+		const url = "http://localhost:8000/get-buying-power";
+		const bodyData = {"users": [props.username]}	
+		
+		const request = await fetch(url, {
+			method: "POST",
+			headers: {
+				"Authorization": token,
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(bodyData)
+		});
+		
+		switch (request.status) {
+		
+			case 401 :
+				alert("Please sign in again auth failed");
+				window.location.href = "/";	
+				return;
+
+			case 200 :
+				const data = await request.json();
+				const userObj = data[props.username]
+				
+				try {
+					buying_power_output.current.innerHTML = userObj["buying_power"]	
+					cash_output.current.innerHTML = userObj["cash"];	
+				} catch (error) {
+					buying_power_output.current.innerHTML = "Error Getting Value, verify user keys";	
+				}
+				break;
+
+			default :
+				buying_power_output.current.innerHTML = "";	
+				alert("Unhandled error, please contact developer with details on encountering this message.");	
+				break;
+		}
+
+	}
+
 	if (toggle) {
 		return (
 			<details className={styles.container}>
@@ -173,11 +222,12 @@ export default function User(props) {
 				<div className={styles.content}>
 					<p>api key: {props.api_key}</p>
 					<p>api secret: {props.api_secret}</p>
-					<p>Buying Power: {props.buying_power}</p>
-					<p>Cash: {props.cash}</p>
 					<p>paper trading: {props.paper_trading}</p>
 					<button onClick={toggleSwitch}>Edit Values</button>
 					<button onClick={deleteUser}>Delete User</button>
+					<button onClick={getBuyingPower}>Get Buying Power</button>
+					<p ref={buying_power_output}></p>
+					<p ref={cash_output}></p>
 					<br />
 					<br />
 					<div className={styles.getStockPosition}>

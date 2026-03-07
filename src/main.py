@@ -428,30 +428,7 @@ def get_all_users_endpoint12() :
      
     users = get_all_users() 
     
-    buying_power_return= {}
-
-    for user in users :
-        username = None
-        
-        if not isinstance(user, dict) :
-            continue
-
-        username = user["name"]
-    
-        user = User(username)
-        user.attempt_getdbinfo()
-
-        buying_power = get_buying_power(user) 
-
-        if isinstance(buying_power, Error) :
-            buying_power_return[username] = buying_power.error
-            continue
-        
-        buying_power_return[username] = buying_power 
-
-
-    return {"users": users, "buying_power": buying_power_return}, 200, {}
-
+    return {"users": users}, 200, {}
     
 @app.route("/delete-order", methods=["POST"])
 def delete_order_endpoint() :
@@ -473,6 +450,53 @@ def delete_order_endpoint() :
     
     delete_order(client_order_id)
     return {}, 200, {} 
+    
+
+@app.route("/get-buying-power", methods=["POST"])
+def get_buying_power_endpoint() :
+    auth_header = request.headers.get("Authorization") 
+
+    if auth_header != CURRENT_MASTER_TOKEN  or auth_header == None:
+        return {"error": "auth failed"}, 401, {}
+     
+    data = request.get_json()
+        
+    users= None
+
+    try :
+        users = data["users"] 
+
+    except Exception as _ :
+        return {"error": "missing key json body data"}, 400, {} 
+        
+    outputMap = {}
+
+    for username in users :
+
+        user = User(username)
+        
+        try :
+            user.attempt_getdbinfo()
+        
+        except Exception as _: 
+            outputMap[username] = "user not found"  
+            continue 
+
+        buying_power = get_buying_power(user)
+
+        if isinstance(buying_power, Error) :
+            
+            if buying_power.error_message == "trading client failed" :
+                outputMap["username"] = "trading client failed"
+                continue 
+
+            outputMap[username] = buying_power.error
+            continue
+        
+        outputMap[username] = buying_power
+
+    return outputMap, 200, {} 
+
 
 app.run(port=8000)
 
