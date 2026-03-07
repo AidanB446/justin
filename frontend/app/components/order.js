@@ -1,14 +1,17 @@
 "use client";
 
 import styles from "./order.module.css";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 export default function Order(props) {
+	const dataBox = useRef(null);
+	const statusOutput = useRef(null);
+	const [rawDataToggle, setRawDataToggle] = useState(false);
+	const original_pipe = props.pipe;
+
 	if (typeof props.pipe === "string") {
 		return <div className={styles.order}>{props.pipe}</div>;
 	}
-
-	const statusOutput = useRef(null);
 
 	const newArr = [...props.pipe.slice(0, 5), ...props.pipe.slice(6)];
 
@@ -109,9 +112,19 @@ export default function Order(props) {
 		}
 	}
 
+	function toggleData() {
+		if (!rawDataToggle) {
+			dataBox.current.innerHTML = original_pipe.join(" | ");
+			setRawDataToggle(true);
+		} else {
+			dataBox.current.innerHTML = newArr.join(" | ");
+			setRawDataToggle(false);
+		} 
+	}
+
 	return (
 		<div className={styles.order}>
-			<span>{newArr.join(" | ")}</span>
+			<span ref={dataBox}>{newArr.join(" | ")}</span>
 			<span className={styles.orderStatus}>
 				<button onClick={getOrderStatus}>Get Order Status</button>
 				<pre
@@ -122,8 +135,7 @@ export default function Order(props) {
 			<button onClick={deleteOrder}>
 				Delete Order
 			</button>	
-
-
+			<button onClick={toggleData}>Toggle Data</button>	
 		</div>
 	);
 }

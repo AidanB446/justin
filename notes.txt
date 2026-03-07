@@ -1,12 +1,4 @@
 
 TODO :
-	
 	- the order outputs should be the same as the stock data output,
-	- have a button that will show the client the full row of the order if they ask for it. 
-	that way they can see all the data 
-
-
-
-
-
 
