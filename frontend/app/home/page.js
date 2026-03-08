@@ -228,8 +228,8 @@ export default function Home() {
 				const data = await request.json();
 
 				document.getElementById("StockDataOutput").textContent =
-					JSON.stringify(data, null, 2);
-
+					JSON.stringify(data["data"]["primaryData"], null, 2);
+				
 				break;
 
 			default:
@@ -310,7 +310,11 @@ export default function Home() {
 						<button onClick={placeMarketOrder}>
 							Place Market Order
 						</button>
-						<p id="MarketOrderDebug"></p>
+						<pre
+							className={styles.stockDataOutput}
+							id="MarketOrderDebug"
+						>
+						</pre>
 					</div>
 
 					<div id="LimitOrderDiv" className={styles.placeLimitOrder}>
@@ -342,7 +346,11 @@ export default function Home() {
 						<button onClick={placeLimitOrder}>
 							Place Limit Order
 						</button>
-						<p style={{ color: "red" }} id="LimitOrderDebug"></p>
+						<pre
+							className={styles.stockDataOutput}
+							id="LimitOrderDebug"
+						>
+						</pre>
 					</div>
 				</div>
 			</div>
