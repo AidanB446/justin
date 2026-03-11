@@ -186,8 +186,8 @@ def place_iterative_market_order() :
             422, 
             {} # headers
         )
-
-    return orderHandle, 200, {}
+    
+    return {"Aidan": "order placed", "Daniel": "order placed", "no_auth_user": "order failed: invalid authorization"}, 200, {}
 
     
 @app.route("/place_iterative_limit_order", methods=["POST"])

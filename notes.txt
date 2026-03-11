@@ -1,1 +1,9 @@
+options and calls
+time in force not needed, strategy not needed
+stock search not needed
+
+delete order log
+cancel the order, transaction
+
+
 

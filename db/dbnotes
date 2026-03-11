@@ -17,14 +17,6 @@ accounts.db - db for all alpaca accounts that are users
 		name - TEXT - name of the given user	
 		paper_trading - integer	- integer represents a boolean
 
-master.db
-	
-	current master account for testing
-		justin
-		password	
 
 
-	master
-		username TEXT,
-		hash_password TEXT,
 
