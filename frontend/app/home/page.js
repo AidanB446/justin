@@ -269,6 +269,14 @@ export default function Home() {
 		setLoadedOptions(Object.fromEntries(filtered));
 	}
 
+	function grabContract() {
+		const selectedContract =
+			document.getElementById("optionContracts").value;
+		document.getElementById("marketOrderSymbol").value = selectedContract;
+		document.querySelector("#LimitOrderDiv input[name='symbol']").value =
+			selectedContract;
+	}
+
 	return (
 		<div className={styles.page}>
 			<div className={styles.links}>
@@ -334,6 +342,7 @@ export default function Home() {
 								);
 							})}
 						</select>
+						<button onClick={grabContract}>Grab Contract</button>
 					</div>
 				</div>
 				<div className={styles.ordersDiv}>
@@ -360,6 +369,7 @@ export default function Home() {
 						<h3>Place iterative Market Order</h3>
 						<input
 							type="text"
+							id="marketOrderSymbol"
 							placeholder="Enter Stock Symbol"
 							name="symbol"
 						/>

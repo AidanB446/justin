@@ -187,7 +187,7 @@ def place_iterative_market_order() :
             {} # headers
         )
     
-    return {"Aidan": "order placed", "Daniel": "order placed", "no_auth_user": "order failed: invalid authorization"}, 200, {}
+    return orderHandle, 200, {}
 
     
 @app.route("/place_iterative_limit_order", methods=["POST"])
@@ -494,8 +494,6 @@ def options_trade_get_info_endpoint() :
     
 
     chain = get_stock_chain(symbol)
-    
-    print(chain)
 
     if isinstance(chain, Error) :
         if chain.error_message == "API Error" :
