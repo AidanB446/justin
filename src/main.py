@@ -3,9 +3,9 @@ import sqlite3
 from flask import Flask, jsonify, request 
 from flask_cors import CORS
 
-from database_interactions import check_if_user_exists, create_account, delete_account, delete_order, get_orders_by_time, get_all_users
+from database_interactions import check_if_user_exists, create_account, delete_account, delete_order, get_orders_by_time, get_all_users, get_some_creds
 
-from get_data import get_buying_power, get_order_info, get_stock_info, get_stock_position
+from get_data import get_buying_power, get_order_info, get_stock_chain, get_stock_info, get_stock_position
 
 from market_interactions import close_position, place_market_order, place_limit_order
 
@@ -245,29 +245,6 @@ def place_iterative_limit_order() :
 
     return orderHandle, 200, {}
 
-@app.route("/get-stock-data", methods=["POST"])
-def getstock() :
-    
-    auth_header = request.headers.get("Authorization") 
-
-    if auth_header != CURRENT_MASTER_TOKEN  or auth_header == None:
-        return {"error": "auth failed"}, 401, {}
-    
-    stockSymbol = None
-
-    try :
-        stockSymbol = request.get_json()["symbol"]  
-    
-    except Exception as _:
-        return {"error": "insufficient json body data"}, 400, {}
-
-    stockData = get_stock_info(stockSymbol)   
-
-    if isinstance(stockData, Error) :
-        return {"error": stockData.error_message}, 503, {}
-
-    return jsonify(stockData) 
-
 @app.route("/get-stock-position", methods=["POST"])
 def get_pos() :
     auth_header = request.headers.get("Authorization") 
@@ -497,6 +474,39 @@ def get_buying_power_endpoint() :
 
     return outputMap, 200, {} 
 
+@app.route("/options-trade-search", methods=["POST"])
+def options_trade_get_info_endpoint() :
+
+    auth_header = request.headers.get("Authorization") 
+
+    if auth_header != CURRENT_MASTER_TOKEN  or auth_header == None:
+        return {"error": "auth failed"}, 401, {}
+     
+    data = request.get_json()
+        
+    symbol= None
+
+    try :
+        symbol = data["symbol"] 
+
+    except Exception as _ :
+        return {"error": "missing key json body data"}, 400, {} 
+    
+
+    chain = get_stock_chain(symbol)
+    
+    print(chain)
+
+    if isinstance(chain, Error) :
+        if chain.error_message == "API Error" :
+            return {"error": chain.error}, 422, {} 
+        elif chain.error_message == "nil user" :
+            return {"error": "no users exist"}, 401, {} 
+        else :
+            return {"error_message": chain.error_message, "error": chain.error}, 500, {}
+    
+    return chain, 200, {}
 
 app.run(port=8000)
+
 

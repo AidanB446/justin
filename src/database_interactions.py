@@ -5,6 +5,20 @@ from assests import Error, UserOrder
 
 db_directory_path = "./db/"
 
+def get_some_creds() :
+
+    conn = sqlite3.connect(db_directory_path + "accounts.db") 
+    cur = conn.cursor() 
+    cur.execute("SELECT * FROM accounts")
+    responseRow = cur.fetchone()
+     
+    if responseRow == None :
+        return Error("nil user")
+
+    cur.close()
+    conn.close()
+    return responseRow 
+
 def delete_order(client_order_id) :
     conn = sqlite3.connect(db_directory_path + "orders.db")
     cur = conn.cursor() 

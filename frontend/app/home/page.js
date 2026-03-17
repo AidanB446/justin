@@ -1,12 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import styles from "./page.module.css";
+import { doc } from "prettier";
 
 export default function Home() {
 	const [users, setUsers] = useState([]);
+	const originalOptionsRef = useRef(null);
 	const [usernames, setUsernames] = useState(["please,", "wait"]);
 	const [token, setToken] = useState("");
+	const [loadedOptions, setLoadedOptions] = useState({});
 
 	useEffect(() => {
 		const token = sessionStorage.getItem("token");
@@ -139,7 +142,6 @@ export default function Home() {
 			default:
 				break;
 		}
-
 	}
 
 	async function placeLimitOrder() {
@@ -196,45 +198,75 @@ export default function Home() {
 		}
 	}
 
-	async function getStockInfo() {
-		const bodyData = {
-			symbol: document.getElementById("stock_get_info_symbol").value,
-		};
+	async function optionsTradeSearch() {
+		const symbol = document.getElementById("optionsSymbol").value;
+		if (symbol === "") {
+			alert("Please fill out fields");
+			return;
+		}
 
-		document.getElementById("StockDataOutput").innerHTML = "Please Standby";
-
-		const url = "http://localhost:8000/get-stock-data";
-
+		const url = "http://localhost:8000/options-trade-search";
 		const request = await fetch(url, {
 			method: "POST",
 			headers: {
 				Authorization: token,
 				"Content-Type": "application/json",
 			},
-			body: JSON.stringify(bodyData),
+			body: JSON.stringify({ symbol: symbol }),
 		});
 
 		switch (request.status) {
-			case 400:
-				alert("Please fill out all forms in field");
-				return;
+			case 422:
+				const errorStatus = (await request.text()) || null;
+				alert(errorStatus);
+				break;
 
 			case 401:
-				alert("Please sign in again, auth failed");
+				alert(
+					"Please make sure a user exists currently in the database, and login again.",
+				);
 				window.location.href = "/";
-				return;
+				break;
+
+			case 500:
+				alert(
+					"internal server error contact developer with details of receiving this message. Aidanbruner789@gmail.com",
+				);
+				break;
 
 			case 200:
-				const data = await request.json();
-
-				document.getElementById("StockDataOutput").textContent =
-					JSON.stringify(data["data"]["primaryData"], null, 2);
-				
+				const blob = await request.json();
+				console.log(blob);
+				setLoadedOptions(blob);
+				originalOptionsRef.current = blob;
 				break;
 
 			default:
 				break;
 		}
+	}
+
+	function dateFilter() {
+		const year = document.getElementById("optionSearchYear").value;
+		const month = document.getElementById("optionSearchMonth").value;
+
+		if (year === "" || month === "") {
+			setLoadedOptions(originalOptionsRef.current);
+			return;
+		}
+
+		const source = originalOptionsRef.current;
+
+		const filtered = Object.entries(source).filter(([key, value]) => {
+			const match = value.match(/\d{4}-\d{2}-\d{2}/);
+			if (!match) return false;
+
+			const [y, m] = match[0].split("-").map(Number);
+
+			return y === Number(year) && m === Number(month);
+		});
+
+		setLoadedOptions(Object.fromEntries(filtered));
 	}
 
 	return (
@@ -248,24 +280,61 @@ export default function Home() {
 				</span>
 			</div>
 			<div className={styles.mainContent}>
-				<div className={styles.stockManager}>
-					<h1>Stock Search</h1>
+				<div className={styles.optionsOrdersDiv}>
+					<h2>Options Trading</h2>
+					<label>Search Stock Option Chain</label>
 					<br />
-					<h3>Get Stock Info</h3>
 					<input
+						id="optionsSymbol"
 						type="text"
-						id="stock_get_info_symbol"
-						placeholder="Enter Stock Symbol"
+						placeholder="Enter Symbol"
 					/>
 					<br />
-					<button onClick={getStockInfo}>Get Stock Info</button>
-					<br />
-					<pre
-						className={styles.stockDataOutput}
-						id="StockDataOutput"
+					<button
+						className={styles.optionsTradeSearchButton}
+						onClick={optionsTradeSearch}
 					>
-						Stock Info Output
-					</pre>
+						Search Options Chain
+					</button>
+					<br />
+					<br />
+
+					<div
+						id="optionOrderMenu"
+						className={styles.optionOrderMenu}
+					>
+						<div className={styles.optionSearchDiv}>
+							<input
+								type="text"
+								id="optionSearchYear"
+								placeholder="year"
+							/>
+							<input
+								type="text"
+								id="optionSearchMonth"
+								placeholder="month"
+							/>
+							<button onClick={dateFilter}>Search</button>
+						</div>
+						<br />
+						<br />
+						<select
+							id="optionContracts"
+							className={styles.optionContracts}
+						>
+							{Object.keys(loadedOptions).map((obj, ind) => {
+								return (
+									<option
+										value={obj}
+										className={styles.optionContract}
+										key={ind}
+									>
+										{loadedOptions[obj]}
+									</option>
+								);
+							})}
+						</select>
+					</div>
 				</div>
 				<div className={styles.ordersDiv}>
 					<h1>Place Orders</h1>
@@ -313,8 +382,7 @@ export default function Home() {
 						<pre
 							className={styles.stockDataOutput}
 							id="MarketOrderDebug"
-						>
-						</pre>
+						></pre>
 					</div>
 
 					<div id="LimitOrderDiv" className={styles.placeLimitOrder}>
@@ -349,8 +417,7 @@ export default function Home() {
 						<pre
 							className={styles.stockDataOutput}
 							id="LimitOrderDebug"
-						>
-						</pre>
+						></pre>
 					</div>
 				</div>
 			</div>

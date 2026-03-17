@@ -1,35 +1,41 @@
 
-import requests
+from alpaca.data.historical.option import OptionHistoricalDataClient
+from alpaca.data.requests import OptionChainRequest
 
-logindata = {
-        "password": "password"
-        }
+API_KEY = "PKK5LVE3RSHVEEKKBQDWWAGQLI"
+SECRET_KEY = "FRB8HP18WMd7Tchk3p8TLnmkX6wEvj6jZujC45D1LEFT"
 
-headers = {
-        "Authorization" : "tgO7mjRWAGLdOUHyTFtFYSz48YEDfO",
-        }
+data_client = OptionHistoricalDataClient(API_KEY, SECRET_KEY)
 
-url = "http://localhost:8000/login"
+request = OptionChainRequest(
+    underlying_symbol="AAPL"
+)
 
-request1 = requests.post(url, json=logindata)
+chain = data_client.get_option_chain(request)
 
-data = request1.json()
 
-token = data["token"]
+def parse_option_symbol(symbol):
+    underlying = symbol[:4]
+    expiration = symbol[4:10]
+    opt_type = symbol[10]
+    strike = int(symbol[11:]) / 1000
 
-url = "http://localhost:8000/get-buying-power"
+    return {
+        "underlying": underlying,
+        "expiration": f"20{expiration[:2]}-{expiration[2:4]}-{expiration[4:]}",
+        "type": "Call" if opt_type == "C" else "Put",
+        "strike": strike,
+    }
 
-headers = {
-        "Authorization": token,
-        "Content-Type": "application/json"
-        }
 
-requestData = {
-        "users": ["Aidan", "daniel", "asdfsadf"], 
-        }
+for contract in chain:
+    parsed = parse_option_symbol(contract)
 
-request2 = requests.post(url, json=requestData, headers=headers)
+    print(
+        f"{parsed['expiration']} | "
+        f"{parsed['type']:4} | "
+        f"${parsed['strike']:>6} | "
+        f"{contract}"
+    )
 
-print(request2.status_code)
-print(request2.json())
 

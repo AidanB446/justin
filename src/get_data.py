@@ -2,8 +2,10 @@
 import requests
 from alpaca.common.exceptions import APIError
 
+from alpaca.data.requests import OptionChainRequest
 from alpaca.data.requests import StockLatestTradeRequest
 from alpaca.data.historical import StockHistoricalDataClient
+from alpaca.data.historical.option import OptionHistoricalDataClient
 
 from alpaca.trading.client import TradingClient
 
@@ -12,7 +14,67 @@ from alpaca.common import RawData
 
 from alpaca.trading.models import Order, Position
 
-from assests import Error, User
+from assests import Error
+from database_interactions import get_some_creds
+
+
+def get_stock_chain(symbol) :
+    
+    # parse db and get user keys
+    creds = get_some_creds() 
+
+    if isinstance(creds, Error) :
+        return creds
+    
+    API_KEY = creds[0]
+    SECRET_KEY = creds[1] 
+    
+    print(API_KEY)
+    print(SECRET_KEY)
+
+    data_client = OptionHistoricalDataClient(API_KEY, SECRET_KEY)
+
+    request = OptionChainRequest(
+        underlying_symbol=symbol
+    )
+    
+    chain = None
+
+    try :
+        chain = data_client.get_option_chain(request)
+
+    except APIError as e:
+        print(e) 
+        return Error("API Error", e)
+
+    def parse_option_symbol(symbol):
+        underlying = symbol[:4]
+        expiration = symbol[4:10]
+        opt_type = symbol[10]
+        strike = int(symbol[11:]) / 1000
+
+        return {
+            "underlying": underlying,
+            "expiration": f"20{expiration[:2]}-{expiration[2:4]}-{expiration[4:]}",
+            "type": "Call" if opt_type == "C" else "Put",
+            "strike": strike,
+        }
+    
+    return_contract_data_obj = {}
+
+    for contract in chain:
+        parsed = parse_option_symbol(contract)
+
+        return_string = (
+            f"{parsed['expiration']} | "
+            f"{parsed['type']:4} | "
+            f"${parsed['strike']:>6} | "
+            f"{contract}"
+        )
+        
+        return_contract_data_obj[contract] = return_string
+    
+    return return_contract_data_obj 
 
 def get_latest_price(user, stockSymbols) :
     api_key = user.api_key  

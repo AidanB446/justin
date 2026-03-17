@@ -16,6 +16,41 @@
 	height: fit-content;
 }
 
+.optionsOrdersDiv {
+	border: 2px black solid;
+	border-radius: 5px;
+	width: fit-content;
+	padding: 10px;
+	height: fit-content;
+}
+
+.optionOrderMenu {
+	display: flex;
+	flex-direction: column;
+}
+
+.optionOrderMenu input {
+	width: 45px;
+}
+
+.optionContracts {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+}
+
+.optionSearchDiv {
+	display: flex;
+	flex-direction: row;
+	gap: 10px;
+
+	border-bottom: 2px solid black;
+
+	padding: 10px;
+	padding-left: 0px;
+}
+
+
 .linkDiv,
 .ordersDiv {
 	border: 2px black solid;
