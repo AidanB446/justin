@@ -19,7 +19,7 @@
 .optionsOrdersDiv {
 	border: 2px black solid;
 	border-radius: 5px;
-	width: fit-content;
+	width: 45%;
 	padding: 10px;
 	height: fit-content;
 }
@@ -50,12 +50,20 @@
 	padding-left: 0px;
 }
 
-
-.linkDiv,
-.ordersDiv {
+.linkDiv {
 	border: 2px black solid;
 	border-radius: 5px;
 	width: fit-content;
+	overflow-x: scroll;
+	padding: 10px;
+	height: fit-content;
+}
+
+.ordersDiv {
+	border: 2px black solid;
+	border-radius: 5px;
+	width: 45%;
+	overflow-x: scroll;
 	padding: 10px;
 	height: fit-content;
 }

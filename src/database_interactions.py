@@ -46,7 +46,9 @@ def get_all_users() :
         }
 
         users.append(userDict)
-        
+    
+    cur.close()
+    conn.close()
     return users
 
 def check_if_user_exists(username) :
@@ -60,6 +62,8 @@ def check_if_user_exists(username) :
     )
     
     response = cur.fetchone()
+    cur.close()
+    conn.close()
     
     return bool(response[0])
 
@@ -108,6 +112,14 @@ def delete_account(username) :
     cur.close()
     conn.close()
 
+def delete_orders_from_transaction_id(transaction_id) :
+    conn = sqlite3.connect(db_directory_path + "orders.db")
+    cur = conn.cursor()
+    cur.execute("DELETE from orders WHERE transaction_id = ?", [transaction_id])
+    cur.close()
+    conn.close()
+    return 
+
 def get_user_orders_from_transaction_id(transaction_id) :
     conn = sqlite3.connect(db_directory_path + "orders.db")
     cur = conn.cursor()
@@ -124,6 +136,8 @@ def get_user_orders_from_transaction_id(transaction_id) :
         
         returnOrders.append(newOrder)
     
+    cur.close()
+    conn.close()
     return returnOrders
 
 def get_orders_by_time(year, month):

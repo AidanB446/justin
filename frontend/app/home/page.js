@@ -2,10 +2,8 @@
 
 import { useEffect, useState, useRef } from "react";
 import styles from "./page.module.css";
-import { doc } from "prettier";
 
 export default function Home() {
-	const [users, setUsers] = useState([]);
 	const originalOptionsRef = useRef(null);
 	const [usernames, setUsernames] = useState(["please,", "wait"]);
 	const [token, setToken] = useState("");
@@ -33,7 +31,6 @@ export default function Home() {
 
 			switch (request.status) {
 				case 200:
-					setUsers(response["users"]);
 					const usernamesFound = [];
 
 					for (let i = 0; i < response["users"].length; i++) {
@@ -277,6 +274,54 @@ export default function Home() {
 			selectedContract;
 	}
 
+	async function cancelTransaction() {
+		const transaction_id = document.getElementById(
+			"cancelTransaction_id",
+		).value;
+		if (transaction_id === "") {
+			alert("Please fill out fields");
+			return;
+		}
+
+		const url = "http://localhost:8000/cancel-transaction";
+		const request = await fetch(url, {
+			method: "POST",
+			headers: {
+				Authorization: token,
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				transaction_id: transaction_id,
+				users: grabSelectedUsers(),
+			}),
+		});
+
+		switch (request.status) {
+			case 200:
+				const response = await request.json();
+				document.getElementById("CancelOrderOutput").innerHTML =
+					Object.entries(response)
+						.map(
+							([k, v]) =>
+								`${k}: ${Array.isArray(v) ? v.join(" ") : v}`,
+						)
+						.join("<br>");
+
+				break;
+
+			case 401:
+				alert("auth issue, please login again");
+				window.location.href = "/";
+				return;
+
+			default:
+				alert(
+					"Please contact developer with details of encountering this message.",
+				);
+				return;
+		}
+	}
+
 	return (
 		<div className={styles.page}>
 			<div className={styles.links}>
@@ -427,6 +472,25 @@ export default function Home() {
 						<pre
 							className={styles.stockDataOutput}
 							id="LimitOrderDebug"
+						></pre>
+					</div>
+					<div
+						id="cancelTransaction"
+						className={styles.cancelTransaction}
+					>
+						<h3>Cancel Transaction</h3>
+						<input
+							type="text"
+							id="cancelTransaction_id"
+							placeholder="Enter Transaction ID"
+						/>
+						<br />
+						<button onClick={cancelTransaction}>
+							Cancel Orders
+						</button>
+						<pre
+							className={styles.cancelOrderOutput}
+							id="CancelOrderOutput"
 						></pre>
 					</div>
 				</div>

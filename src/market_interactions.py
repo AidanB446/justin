@@ -1,5 +1,5 @@
 
-from assests import Error
+from assests import Error, User
 from assests import new_transaction_id
 
 from database_interactions import insertDBOrder
@@ -144,10 +144,15 @@ def cancel_orders(users : list[str], transaction_id) :
         
         if user.user not in users :
             continue
+    
+        userObj = User(user.user)
+        userBool = userObj.attempt_getdbinfo()
+        if not userBool :
+            returnData[user.user] = "user does not exist"
 
-        api_key = user.api_key
-        api_secret= user.api_secret
-        paper_trading_bool = user.paper_trading
+        api_key = userObj.api_key
+        api_secret= userObj.api_secret
+        paper_trading_bool = userObj.paper_trading
 
         trading_client = None
 

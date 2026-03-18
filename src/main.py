@@ -3,11 +3,11 @@ import sqlite3
 from flask import Flask, jsonify, request 
 from flask_cors import CORS
 
-from database_interactions import check_if_user_exists, create_account, delete_account, delete_order, get_orders_by_time, get_all_users, get_some_creds
+from database_interactions import check_if_user_exists, create_account, delete_account, delete_order, delete_orders_from_transaction_id, get_orders_by_time, get_all_users, get_some_creds
 
 from get_data import get_buying_power, get_order_info, get_stock_chain, get_stock_info, get_stock_position
 
-from market_interactions import close_position, place_market_order, place_limit_order
+from market_interactions import cancel_orders, close_position, place_market_order, place_limit_order
 
 from assests import User, password_auth, Error
 
@@ -505,6 +505,33 @@ def options_trade_get_info_endpoint() :
     
     return chain, 200, {}
 
-app.run(port=8000)
+@app.route("/cancel-transaction", methods=["POST"])
+def cancel_transaction() :
 
+    auth_header = request.headers.get("Authorization") 
+
+    if auth_header != CURRENT_MASTER_TOKEN  or auth_header == None:
+        return {"error": "auth failed"}, 401, {}
+     
+    data = request.get_json()
+        
+    transaction_id= None
+    users = None
+
+    try :
+        transaction_id = data["transaction_id"] 
+        users = data["users"] 
+
+    except Exception as _ :
+        return {"error": "missing key json body data"}, 400, {} 
+
+    # first remomve all from the database, 
+    delete_orders_from_transaction_id(transaction_id) 
+
+    # then send all cancel order requests. 
+    cancelOrderData = cancel_orders(users, transaction_id)
+
+    return cancelOrderData, 200, {}  
+
+app.run(port=8000)
 
