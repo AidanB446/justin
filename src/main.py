@@ -1,4 +1,5 @@
 
+import sys
 import os
 import sqlite3
 from flask import Flask, jsonify, request, send_from_directory
@@ -9,7 +10,16 @@ from get_data import get_buying_power, get_order_info, get_stock_chain, get_stoc
 from market_interactions import cancel_orders, close_position, place_market_order, place_limit_order
 from assests import User, password_auth, Error
 
-app = Flask(__name__, static_folder="frontendOut", static_url_path='')
+BASE_DIR = None
+
+if getattr(sys, 'frozen', False):
+    BASE_DIR = os.path.dirname(sys.executable)
+else:
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+STATIC_DIR = os.path.join(BASE_DIR, "frontendOut")  # your exported Next.js folder
+
+app = Flask(__name__, static_folder=STATIC_DIR, static_url_path='')
 CORS(app)
 
 MASTER_HASH = "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8"
