@@ -1,25 +1,32 @@
 
+import os
 import sqlite3
-from flask import Flask, jsonify, request 
+from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 
 from database_interactions import check_if_user_exists, create_account, delete_account, delete_order, delete_orders_from_transaction_id, get_orders_by_time, get_all_users, get_some_creds
-
 from get_data import get_buying_power, get_order_info, get_stock_chain, get_stock_info, get_stock_position
-
 from market_interactions import cancel_orders, close_position, place_market_order, place_limit_order
-
 from assests import User, password_auth, Error
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="frontendOut", static_url_path='')
 CORS(app)
 
 MASTER_HASH = "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8"
 CURRENT_MASTER_TOKEN = "a28047151d0e56f8dc6292773603d0d6"
 
-@app.route("/")
-def hello() :
-    return "site land"
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve(path):
+    if app.static_folder is None:
+        return "site land"
+
+    full_path = os.path.join(app.static_folder, path)
+
+    if path != "" and os.path.exists(full_path):
+        return send_from_directory(app.static_folder, path)
+
+    return send_from_directory(app.static_folder, "index.html")
 
 @app.route("/login", methods=["POST"])
 def login():

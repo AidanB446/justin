@@ -27,7 +27,7 @@ export default function Home() {
 		
 		if (request.status === 200) {
 			sessionStorage.setItem("token", response["token"]);
-			window.location.href = "/home";
+			window.location.href = "/home.html";
 		} else {
 			document.getElementById("debugText").innerHTML = "login failed";
 		}

@@ -326,10 +326,10 @@ export default function Home() {
 		<div className={styles.page}>
 			<div className={styles.links}>
 				<span className={styles.linkDiv}>
-					<a href="/user-portal">User Portal</a>
+					<a href="/user-portal.html">User Portal</a>
 				</span>
 				<span className={styles.linkDiv}>
-					<a href="/orders">Orders</a>
+					<a href="/orders.html">Orders</a>
 				</span>
 			</div>
 			<div className={styles.mainContent}>

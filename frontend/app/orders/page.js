@@ -63,7 +63,7 @@ export default function OrderManagerPage() {
 		<div className={styles.page}>
 			<button
 				onClick={() => {
-					window.location.href = "/home";
+					window.location.href = "/home.html";
 				}}
 				className={styles.backButton}
 			>

@@ -124,7 +124,7 @@ export default function UserPortal() {
 	}
 
 	function backButton() {
-		window.location.href = "/home";
+		window.location.href = "/home.html";
 	}
 	
 	
