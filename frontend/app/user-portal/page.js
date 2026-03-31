@@ -127,12 +127,6 @@ export default function UserPortal() {
 		window.location.href = "/home.html";
 	}
 	
-	
-	if (users.length === 0) {
-		return <div>please standby</div>
-	}
-
-
 	return (
 		<div>
 			<button onClick={backButton} className={styles.backButton}>
