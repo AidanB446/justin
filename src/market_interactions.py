@@ -15,6 +15,8 @@ from alpaca.trading.models import Order
 from alpaca.trading.requests import LimitOrderRequest, MarketOrderRequest 
 from alpaca.trading.enums import OrderSide, TimeInForce
 
+import threading
+
 def place_market_order(users, stockSymbol, stockOperationQty, side) :
 
     orderside = None 
@@ -27,11 +29,11 @@ def place_market_order(users, stockSymbol, stockOperationQty, side) :
         return Error("incorrect side in parameter for place_market_order function.")
      
     return_data= {}
+    lock = threading.Lock() 
 
     client_transaction_id = new_transaction_id() 
 
-    for user in users :
-            
+    def process_request(user) :
         api_key = user.api_key
         api_secret= user.api_secret
         paper_trading_bool = user.paper_trading
@@ -43,8 +45,10 @@ def place_market_order(users, stockSymbol, stockOperationQty, side) :
             trading_client = TradingClient(api_key, api_secret, paper=paper_trading_bool)
 
         except APIError as e:
-            return_data[username] = "Trading Client failed to initialize"
-            continue
+            with lock:  
+                return_data[username] = "Trading Client failed to initialize"
+            
+            return
 
         market_order_data = MarketOrderRequest(
             symbol=stockSymbol,
@@ -66,11 +70,21 @@ def place_market_order(users, stockSymbol, stockOperationQty, side) :
             date_and_time = datetime.now().isoformat()
 
             result = insertDBOrder("market", stockSymbol, stockOperationQty, side, username, client_order_id, client_transaction_id, date_and_time)
-            
-            return_data[username] = "order placed"
-
+            with lock:
+                return_data[username] = "order placed"
         except Exception as e:
-            return_data[username] = f"order failed: {e}"
+            with lock: 
+                return_data[username] = f"order failed: {e}"
+        
+
+    threads = []
+    for user in users :
+        t = threading.Thread(target=process_request, args=(user,)) 
+        t.start()
+        threads.append(t)
+    
+    for t in threads : 
+        t.join()
 
     return return_data 
 
@@ -88,9 +102,9 @@ def place_limit_order(users, stockSymbol, stockOperationQty, side, limit) :
     client_transaction_id = new_transaction_id() 
     
     return_data= {}
+    lock = threading.Lock()
 
-    for user in users :
-            
+    def process_request(user) :
         api_key = user.api_key
         api_secret= user.api_secret
         paper_trading_bool = user.paper_trading
@@ -102,8 +116,9 @@ def place_limit_order(users, stockSymbol, stockOperationQty, side, limit) :
             trading_client = TradingClient(api_key, api_secret, paper=paper_trading_bool)
 
         except APIError as e:
-            return_data[username] = "Trading Client failed to initialize"
-            continue
+            with lock:             
+                return_data[username] = "Trading Client failed to initialize"
+            return
 
         limit_order_data = LimitOrderRequest(
             symbol=str(stockSymbol),
@@ -126,11 +141,21 @@ def place_limit_order(users, stockSymbol, stockOperationQty, side, limit) :
             date_and_time = datetime.now().isoformat()
             
             result = insertDBOrder("limit", stockSymbol, stockOperationQty, side, username, client_order_id, client_transaction_id, date_and_time)
-            
-            return_data[username] = "order placed"
+            with lock:     
+                return_data[username] = "order placed"
 
         except Exception as e:
-            return_data[username] = f"order failed: {e}"
+            with lock:  
+                return_data[username] = f"order failed: {e}"
+
+    threads = []
+    for user in users :
+        t = threading.Thread(target=process_request, args=(user,)) 
+        t.start()
+        threads.append(t) 
+    
+    for t in threads :
+        t.join()
 
     return return_data
 
@@ -139,16 +164,18 @@ def cancel_orders(users : list[str], transaction_id) :
     userList = get_user_orders_from_transaction_id(transaction_id) 
     
     returnData = {}
-
-    for user in userList :
-        
+    lock = threading.Lock()
+    
+    def process_request(user, users) :
         if user.user not in users :
-            continue
+            return 
     
         userObj = User(user.user)
         userBool = userObj.attempt_getdbinfo()
         if not userBool :
-            returnData[user.user] = "user does not exist"
+            with lock :
+                returnData[user.user] = "user does not exist"
+            return 
 
         api_key = userObj.api_key
         api_secret= userObj.api_secret
@@ -160,16 +187,18 @@ def cancel_orders(users : list[str], transaction_id) :
             trading_client = TradingClient(api_key, api_secret, paper=paper_trading_bool)
 
         except APIError as e :
-            returnData[user.user] = f"Trading Client failed to initialize: {e}"
-            continue 
+            with lock:  
+                returnData[user.user] = f"Trading Client failed to initialize: {e}"
+            return 
         
         order = None
 
         try :
             order= trading_client.get_order_by_client_id(user.client_order_id)
         except Exception as e :
-            returnData[user.user] = f"client_order_id no longer active: {e}"
-            continue
+            with lock :
+                returnData[user.user] = f"client_order_id no longer active: {e}"
+            return 
 
         order_id = None
 
@@ -180,12 +209,24 @@ def cancel_orders(users : list[str], transaction_id) :
         
         try :
             trading_client.cancel_order_by_id(order_id)
-            returnData[user.user] = "Cancellation request successfully submitted"
-            
+            with lock :
+                returnData[user.user] = "Cancellation request successfully submitted"
+
             insertDBOrder("cancel request", user.symbol, user.qty, user.side, user.user, user.client_order_id, user.transaction_id, user.date)
 
         except Exception as e :
-            returnData[user.user] = f"Cancellation request failed to submit: {e}"
+            with lock :
+                returnData[user.user] = f"Cancellation request failed to submit: {e}"
+            
+    
+    threads = []
+    for user in userList :
+        t = threading.Thread(target=process_request, args=(user, userList)) 
+        t.start() 
+        threads.append(t)
+    
+    for t in threads :
+        t.join()
 
     return returnData
 
