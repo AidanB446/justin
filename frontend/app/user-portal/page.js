@@ -7,6 +7,8 @@ import { useState, useEffect } from "react";
 export default function UserPortal() {
 	const [users, setUsers] = useState([]);
 	const [token, setToken] = useState("");
+	
+	const domain = "https://brunercloud.org/";
 
 	useEffect(() => {
 		const sesstoken = sessionStorage.getItem("token");
@@ -21,7 +23,7 @@ export default function UserPortal() {
 		async function loadUsers() {
 			try {
 				const request = await fetch(
-					"/get-all-users",
+					domain + "/get-all-users",
 					{
 						method: "GET",
 						headers: {
@@ -82,7 +84,7 @@ export default function UserPortal() {
 			paper_trading: paper_trading.checked,
 		};
 
-		const url = "/usermod/create_account";
+		const url = domain + "/usermod/create_account";
 
 		const request = await fetch(url, {
 			method: "POST",

@@ -4,6 +4,8 @@ import { useEffect, useState, useRef } from "react";
 import styles from "./page.module.css";
 
 export default function Home() {
+
+	const domain = "https://brunercloud.org/";
 	const originalOptionsRef = useRef(null);
 	const [usernames, setUsernames] = useState(["please,", "wait"]);
 	const [token, setToken] = useState("");
@@ -19,7 +21,7 @@ export default function Home() {
 		setToken(token);
 
 		async function get_users() {
-			const url = "/get-all-users";
+			const url = domain + "/get-all-users";
 			const request = await fetch(url, {
 				method: "GET",
 				headers: {
@@ -97,7 +99,7 @@ export default function Home() {
 		console.log(bodyData);
 
 		const request = await fetch(
-			"/place_iterative_market_order",
+			domain + "/place_iterative_market_order",
 			{
 				method: "POST",
 				headers: {
@@ -151,7 +153,7 @@ export default function Home() {
 		}
 
 		const request = await fetch(
-			"/place_iterative_limit_order",
+			domain + "/place_iterative_limit_order",
 			{
 				method: "POST",
 				headers: {
@@ -202,7 +204,7 @@ export default function Home() {
 			return;
 		}
 
-		const url = "/options-trade-search";
+		const url = domain + "/options-trade-search";
 		const request = await fetch(url, {
 			method: "POST",
 			headers: {
@@ -283,7 +285,7 @@ export default function Home() {
 			return;
 		}
 
-		const url = "/cancel-transaction";
+		const url = domain + "/cancel-transaction";
 		const request = await fetch(url, {
 			method: "POST",
 			headers: {

@@ -11,6 +11,7 @@ export default function User(props) {
 	const cash_output = useRef(null);
 
 	const [toggle, setToggle] = useState(true);
+	const domain = "https://brunercloud.org/"
 
 	function toggleSwitch() {
 		setToggle(!toggle);
@@ -45,7 +46,7 @@ export default function User(props) {
 
 		console.log(bodyData);
 
-		const url = "/usermod/modify_account";
+		const url = domain + "/usermod/modify_account";
 		console.log(props.token);
 		const request = await fetch(url, {
 			method: "POST",
@@ -83,7 +84,7 @@ export default function User(props) {
 
 	async function deleteUser() {
 		const request = await fetch(
-			"/usermod/delete_account",
+			domain + "/usermod/delete_account",
 			{
 				method: "POST",
 				headers: {
@@ -125,7 +126,7 @@ export default function User(props) {
 		const symbol = stockSymbolInput.current.value;
 
 		const request = await fetch(
-			"/get-stock-position",
+			domain + "/get-stock-position",
 			{
 				method: "POST",
 				headers: {
@@ -176,7 +177,7 @@ export default function User(props) {
 			return;
 		}
 		
-		const url = "/get-buying-power";
+		const url = domain + "/get-buying-power";
 		const bodyData = {"users": [props.username]}	
 		
 		const request = await fetch(url, {

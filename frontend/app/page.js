@@ -4,9 +4,12 @@ import styles from "./page.module.css";
 
 export default function Home() {
 	
+
+	const domain = "https://brunercloud.org/";
+
 	async function start() {
 		
-		const url = "/login"
+		const url = domain + "/login"
 		
 		const password = document.getElementById("passwordinp").value;
 		

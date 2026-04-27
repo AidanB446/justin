@@ -4,6 +4,8 @@ import styles from "./order.module.css";
 import { useRef, useState } from "react";
 
 export default function Order(props) {
+	const domain = "https://brunercloud.org/"
+
 	const dataBox = useRef(null);
 	const statusOutput = useRef(null);
 	const [rawDataToggle, setRawDataToggle] = useState(false);
@@ -23,7 +25,7 @@ export default function Order(props) {
 			window.location.href = "/";
 		}
 
-		const url = "/get-order-status";
+		const url = domain + "/get-order-status";
 		const bodyData = {
 			name: props.name,
 			transaction_id: props.transaction_id,
@@ -85,7 +87,7 @@ export default function Order(props) {
 			window.location.href = "/";
 		}
 
-		const url = "/delete-order"
+		const url = domain + "/delete-order"
 	
 		const requestData = {"client_order_id": props.client_order_id};
 		const request = await fetch(url, {

@@ -3,6 +3,8 @@ import Order from "../components/order";
 import styles from "./page.module.css";
 import { useState } from "react";
 export default function OrderManagerPage() {
+	const domain = "https://brunercloud.org/";
+
 	const [retrievedOrders, setRetrievedOrders] = useState([
 		"Please complete the fields above, and press the Get Orders button to retrieve previous transactions.",
 	]);
@@ -27,7 +29,7 @@ export default function OrderManagerPage() {
 		}
 
 		const getOrdersRequest = await fetch(
-			"/get-transactions",
+			domain + "/get-transactions",
 			{
 				method: "POST",
 				headers: {
