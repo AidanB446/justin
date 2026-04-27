@@ -45,7 +45,7 @@ export default function User(props) {
 
 		console.log(bodyData);
 
-		const url = "http://localhost:8000/usermod/modify_account";
+		const url = "/usermod/modify_account";
 		console.log(props.token);
 		const request = await fetch(url, {
 			method: "POST",
@@ -83,7 +83,7 @@ export default function User(props) {
 
 	async function deleteUser() {
 		const request = await fetch(
-			"http://localhost:8000/usermod/delete_account",
+			"/usermod/delete_account",
 			{
 				method: "POST",
 				headers: {
@@ -125,7 +125,7 @@ export default function User(props) {
 		const symbol = stockSymbolInput.current.value;
 
 		const request = await fetch(
-			"http://localhost:8000/get-stock-position",
+			"/get-stock-position",
 			{
 				method: "POST",
 				headers: {
@@ -176,7 +176,7 @@ export default function User(props) {
 			return;
 		}
 		
-		const url = "http://localhost:8000/get-buying-power";
+		const url = "/get-buying-power";
 		const bodyData = {"users": [props.username]}	
 		
 		const request = await fetch(url, {

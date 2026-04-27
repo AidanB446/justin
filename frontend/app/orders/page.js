@@ -27,7 +27,7 @@ export default function OrderManagerPage() {
 		}
 
 		const getOrdersRequest = await fetch(
-			"http://localhost:8000/get-transactions",
+			"/get-transactions",
 			{
 				method: "POST",
 				headers: {

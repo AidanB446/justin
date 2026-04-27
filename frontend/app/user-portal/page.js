@@ -21,7 +21,7 @@ export default function UserPortal() {
 		async function loadUsers() {
 			try {
 				const request = await fetch(
-					"http://localhost:8000/get-all-users",
+					"/get-all-users",
 					{
 						method: "GET",
 						headers: {
@@ -82,7 +82,7 @@ export default function UserPortal() {
 			paper_trading: paper_trading.checked,
 		};
 
-		const url = "http://localhost:8000/usermod/create_account";
+		const url = "/usermod/create_account";
 
 		const request = await fetch(url, {
 			method: "POST",

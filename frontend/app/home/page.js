@@ -19,7 +19,7 @@ export default function Home() {
 		setToken(token);
 
 		async function get_users() {
-			const url = "http://localhost:8000/get-all-users";
+			const url = "/get-all-users";
 			const request = await fetch(url, {
 				method: "GET",
 				headers: {
@@ -97,7 +97,7 @@ export default function Home() {
 		console.log(bodyData);
 
 		const request = await fetch(
-			"http://localhost:8000/place_iterative_market_order",
+			"/place_iterative_market_order",
 			{
 				method: "POST",
 				headers: {
@@ -151,7 +151,7 @@ export default function Home() {
 		}
 
 		const request = await fetch(
-			"http://localhost:8000/place_iterative_limit_order",
+			"/place_iterative_limit_order",
 			{
 				method: "POST",
 				headers: {
@@ -202,7 +202,7 @@ export default function Home() {
 			return;
 		}
 
-		const url = "http://localhost:8000/options-trade-search";
+		const url = "/options-trade-search";
 		const request = await fetch(url, {
 			method: "POST",
 			headers: {
@@ -283,7 +283,7 @@ export default function Home() {
 			return;
 		}
 
-		const url = "http://localhost:8000/cancel-transaction";
+		const url = "/cancel-transaction";
 		const request = await fetch(url, {
 			method: "POST",
 			headers: {

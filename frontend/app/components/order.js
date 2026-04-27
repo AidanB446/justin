@@ -23,7 +23,7 @@ export default function Order(props) {
 			window.location.href = "/";
 		}
 
-		const url = "http://localhost:8000/get-order-status";
+		const url = "/get-order-status";
 		const bodyData = {
 			name: props.name,
 			transaction_id: props.transaction_id,
@@ -85,7 +85,7 @@ export default function Order(props) {
 			window.location.href = "/";
 		}
 
-		const url = "http://localhost:8000/delete-order"
+		const url = "/delete-order"
 	
 		const requestData = {"client_order_id": props.client_order_id};
 		const request = await fetch(url, {

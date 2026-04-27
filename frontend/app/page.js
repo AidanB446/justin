@@ -6,7 +6,7 @@ export default function Home() {
 	
 	async function start() {
 		
-		const url = "http://localhost:8000/login"
+		const url = "/login"
 		
 		const password = document.getElementById("passwordinp").value;
 		
